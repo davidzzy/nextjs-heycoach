@@ -1,3 +1,25 @@
+import React from 'react';
+import Container from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import { makeStyles } from '@material-ui/core/styles';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+
+import { provinceData } from '../../public/data/province.js'
+
+const useStyles = makeStyles((theme) => ({
+  formControl: {
+    margin: theme.spacing(2),
+    minWidth: 200,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
+}));
+
 const htmlText = `
 <body><div id="map" style="width:800px;height: 500px;"></div>
 <script src="https://img.hcharts.cn/highmaps/highmaps.js"></script>
@@ -25,11 +47,45 @@ var map = new Highcharts.Map('map', {
 });
 </script></body>`
 
+
 export default function PlayerSelection() {
+  const [province, setProvince] = React.useState('');
+  const classes = useStyles();
+  const handleChange = (event) => {
+    setProvince(event.target.value);
+  };
+
+  const renderProvinces = () => {
+    return provinceData.map((i) => {
+      return (
+        <MenuItem value={i.name}>{i.name}</MenuItem>
+      );
+    });
+   }
+  
     return (
-        <div>
+      <Container maxWidth="sm">
+      <Box my={4}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          球员选择
+        </Typography>
+        各省球员身体素质学习能力各不相同
+      </Box>
+      <FormControl className={classes.formControl}>
+        <InputLabel id="demo-simple-select-label">省份</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={province}
+          onChange={handleChange}
+        >
+          {renderProvinces()}
+        </Select>
+      </FormControl>
+      <div>
             <div className="text-container" dangerouslySetInnerHTML={{ __html: htmlText }} />
             <h1>球员选择</h1>
-        </div>
+      </div>
+    </Container>
     );
   }
