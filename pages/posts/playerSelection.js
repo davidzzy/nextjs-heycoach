@@ -4,11 +4,17 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import { makeStyles } from '@material-ui/core/styles';
+import { createGenerateClassName, makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 import Select from '@material-ui/core/Select';
+import Modal from '@material-ui/core/Modal';
 
 import { provinceData } from '../../public/data/province.js'
+import { lastName } from '../../public/data/lastName.js'
+import { firstName } from '../../public/data/firstName.js'
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -18,7 +24,16 @@ const useStyles = makeStyles((theme) => ({
   selectEmpty: {
     marginTop: theme.spacing(2),
   },
+  paper: {
+    position: 'absolute',
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
 }));
+
 
 const htmlText = `
 <body><div id="map" style="width:800px;height: 500px;"></div>
@@ -50,10 +65,16 @@ var map = new Highcharts.Map('map', {
 
 export default function PlayerSelection() {
   const [province, setProvince] = React.useState('');
+  const [open, setOpen] = React.useState(false);
   const classes = useStyles();
+  const [modalStyle] = React.useState();
   const handleChange = (event) => {
     setProvince(event.target.value);
   };
+
+  function ListItemLink(props) {
+    return <ListItem button component="a" {...props} />;
+  }
 
   const renderProvinces = () => {
     return provinceData.map((i) => {
@@ -63,13 +84,43 @@ export default function PlayerSelection() {
     });
    }
   
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const renderPlayerStats = (data) => {
+    return (<div style={modalStyle} className={classes.paper}>
+      <h2 id="simple-modal-title">球员详细数据</h2>
+      <p id="simple-modal-description">
+        {data}
+      </p>
+    </div>
+    );
+  }
+
+  const generateName = () => {
+    //firstName.length 800
+    //lastName.length 190
+    const firstNameSelect = Math.floor(Math.random() * 800); 
+    const lastNameSelect = Math.floor(Math.random() * 190);
+    const secondLetter = Math.floor(Math.random() * 2);
+    const secondLetterSelect = secondLetter === 1 ? firstName[Math.floor(Math.random() * 800)] : '';
+    return (lastName[lastNameSelect] + firstName[firstNameSelect] + secondLetterSelect)
+  }
+  
+
+  
     return (
       <Container maxWidth="sm">
       <Box my={4}>
         <Typography variant="h4" component="h1" gutterBottom>
           球员选择
         </Typography>
-        各省球员身体素质学习能力各不相同
+        从各省选择生源
       </Box>
       <FormControl className={classes.formControl}>
         <InputLabel id="demo-simple-select-label">省份</InputLabel>
@@ -81,6 +132,22 @@ export default function PlayerSelection() {
         >
           {renderProvinces()}
         </Select>
+        <List component="nav" aria-label="secondary mailbox folders">
+        <ListItem button>
+          <ListItemText primary={`${province}球员`} />
+        </ListItem>
+        <ListItemLink  onClick={handleOpen}>
+          <ListItemText primary= {generateName()} />
+        </ListItemLink>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+        >
+         {renderPlayerStats(province)}
+        </Modal>
+      </List>
       </FormControl>
       <div>
             <div className="text-container" dangerouslySetInnerHTML={{ __html: htmlText }} />
