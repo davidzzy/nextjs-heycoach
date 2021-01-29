@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
@@ -15,6 +15,7 @@ import Modal from '@material-ui/core/Modal';
 import { provinceData } from '../../public/data/province.js'
 import { lastName } from '../../public/data/lastName.js'
 import { firstName } from '../../public/data/firstName.js'
+import createPlayer  from '../../components/player.js'
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -65,12 +66,13 @@ var map = new Highcharts.Map('map', {
 
 export default function PlayerSelection() {
   const [province, setProvince] = React.useState('');
+  const [player, setPlayer] = React.useState({});
   const [open, setOpen] = React.useState(false);
   const classes = useStyles();
   const [modalStyle] = React.useState();
   const handleChange = (event) => {
     setProvince(event.target.value);
-  };
+  };  
 
   function ListItemLink(props) {
     return <ListItem button component="a" {...props} />;
@@ -92,12 +94,17 @@ export default function PlayerSelection() {
     setOpen(false);
   };
 
-  const renderPlayerStats = (data) => {
+  const renderPlayerStats = (player) => {
+    console.log('data   ', player)
     return (<div style={modalStyle} className={classes.paper}>
       <h2 id="simple-modal-title">球员详细数据</h2>
-      <p id="simple-modal-description">
-        {data}
-      </p>
+      <p id="simple-modal-description">姓名 {player.name}</p>
+      <p id="simple-modal-description">速度 {player.speed}</p>
+      <p id="simple-modal-description">力量 {player.strenth}</p>
+      <p id="simple-modal-description">弹跳 {player.jumping}</p>
+      <p id="simple-modal-description">耐力 {player.stamina}</p>
+      <p id="simple-modal-description">体质 {player.fitness}</p>
+      <p id="simple-modal-description">综合身体素质 {player.physical}</p>
     </div>
     );
   }
@@ -109,8 +116,22 @@ export default function PlayerSelection() {
     const lastNameSelect = Math.floor(Math.random() * 190);
     const secondLetter = Math.floor(Math.random() * 2);
     const secondLetterSelect = secondLetter === 1 ? firstName[Math.floor(Math.random() * 800)] : '';
+    console.log('generated!!!!')
+    console.log(createPlayer())
     return (lastName[lastNameSelect] + firstName[firstNameSelect] + secondLetterSelect)
   }
+  
+  
+
+  useEffect(() => {
+    // code to run on component mount
+    console.log('rerender!!')
+    const player = createPlayer()
+    player.name = generateName();
+    setPlayer(player);
+
+    console.log(player.name)
+  }, [])
   
 
   
@@ -137,7 +158,7 @@ export default function PlayerSelection() {
           <ListItemText primary={`${province}球员`} />
         </ListItem>
         <ListItemLink  onClick={handleOpen}>
-          <ListItemText primary= {generateName()} />
+          <ListItemText primary= {player.name} />
         </ListItemLink>
         <Modal
           open={open}
@@ -145,7 +166,7 @@ export default function PlayerSelection() {
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
         >
-         {renderPlayerStats(province)}
+         {renderPlayerStats(player)}
         </Modal>
       </List>
       </FormControl>
