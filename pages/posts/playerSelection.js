@@ -66,6 +66,7 @@ var map = new Highcharts.Map('map', {
 
 export default function PlayerSelection() {
   const [province, setProvince] = React.useState('');
+  const [provinceList, setProvinceList] = React.useState([]);
   const [playerList, setPlayerList] = React.useState([]);
   const [number, setNumber] = React.useState(0);
   const [open, setOpen] = React.useState(false);
@@ -134,14 +135,19 @@ export default function PlayerSelection() {
   useEffect(() => {
     // code to run on component mount
     console.log('rerender!!')
-
-    for (var i = 0; i < 3; i ++){
-      const player = createPlayer()
-      player.name = generateName();
-      setPlayerList(playerList => [...playerList, player]);
+    if (!provinceList.includes(province)){
+      for (var i = 0; i < 3; i ++){
+        const player = createPlayer()
+        player.name = generateName();
+        player.province = province;
+        setPlayerList(playerList => [...playerList, player]);
+        // save here then filter out by province
+      }
+      console.log('array', playerList);
+      setProvinceList(provinceList => [...provinceList, province]);
     }
-    console.log('array', playerList)
-  }, [])
+    
+  }, [province])
   
 
 
@@ -169,12 +175,14 @@ export default function PlayerSelection() {
           <ListItemText primary={`${province}球员`} />
         </ListItem>
         <List>
-        {playerList.map((player, index) => {
-          return (
-            <ListItem button onClick={() => handleOpen(index)}>
-            <ListItemText primary={player.name} />
-            </ListItem>
-          );
+        {province != '' && playerList.map((player, index) => {
+          if (player.province == province){
+            return (
+              <ListItem button onClick={() => handleOpen(index)}>
+              <ListItemText primary={player.name} />
+              </ListItem>
+            );
+          }
         })}
          <Modal
             open={open}
