@@ -7,6 +7,7 @@ export default function createPlayer() {
     player['fitness'] = Math.floor(Math.random() * 100);
     const physical = player['speed'] + player['strenth'] + player['jumping'] + player['stamina'] + player['fitness'];
     console.log('my physical',physical)
+    //根据五项身体素质总和来评定球员身体素质
     switch(true) {
         case (physical > 400):
             player['physical'] = '超';
@@ -24,5 +25,12 @@ export default function createPlayer() {
             player['physical'] = '不合格';
             break;
     }
+
+    player['rebound'] = Math.floor(Math.random() * 100);
+    player['dribble'] = Math.floor(Math.random() * 100); 
+    player['shooting'] = Math.floor(Math.random() * 100); 
+    player['pass'] = Math.floor(Math.random() * 100); 
+    player['defense'] = Math.floor(Math.random() * 100);
+
     return player
 }

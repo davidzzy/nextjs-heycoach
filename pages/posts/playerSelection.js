@@ -66,7 +66,8 @@ var map = new Highcharts.Map('map', {
 
 export default function PlayerSelection() {
   const [province, setProvince] = React.useState('');
-  const [player, setPlayer] = React.useState({});
+  const [playerList, setPlayerList] = React.useState([]);
+  const [number, setNumber] = React.useState(0);
   const [open, setOpen] = React.useState(false);
   const classes = useStyles();
   const [modalStyle] = React.useState();
@@ -86,27 +87,36 @@ export default function PlayerSelection() {
     });
    }
   
-  const handleOpen = () => {
+  const handleOpen = (index) => {
     setOpen(true);
+    setNumber(index)
   };
 
   const handleClose = () => {
     setOpen(false);
   };
 
-  const renderPlayerStats = (player) => {
-    console.log('data   ', player)
-    return (<div style={modalStyle} className={classes.paper}>
-      <h2 id="simple-modal-title">球员详细数据</h2>
-      <p id="simple-modal-description">姓名 {player.name}</p>
-      <p id="simple-modal-description">速度 {player.speed}</p>
-      <p id="simple-modal-description">力量 {player.strenth}</p>
-      <p id="simple-modal-description">弹跳 {player.jumping}</p>
-      <p id="simple-modal-description">耐力 {player.stamina}</p>
-      <p id="simple-modal-description">体质 {player.fitness}</p>
-      <p id="simple-modal-description">综合身体素质 {player.physical}</p>
-    </div>
-    );
+  const renderPlayerStats = () => {
+    console.log('data   ', number, playerList)
+    if (playerList.length > 0){
+      const player = playerList[number]
+      return (<div style={modalStyle} className={classes.paper}>
+        <h2 id="simple-modal-title">球员详细数据</h2>
+        <p id="simple-modal-description">姓名 {player.name}</p>
+        <p id="simple-modal-description">速度 {player.speed}</p>
+        <p id="simple-modal-description">力量 {player.strenth}</p>
+        <p id="simple-modal-description">弹跳 {player.jumping}</p>
+        <p id="simple-modal-description">耐力 {player.stamina}</p>
+        <p id="simple-modal-description">体质 {player.fitness}</p>
+        <p id="simple-modal-description">综合身体素质 {player.physical}</p>
+        <p id="simple-modal-description">篮板 {player.rebound}</p>
+        <p id="simple-modal-description">运球 {player.dribble}</p>
+        <p id="simple-modal-description">投篮 {player.shooting}</p>
+        <p id="simple-modal-description">传球 {player.pass}</p>
+        <p id="simple-modal-description">防守 {player.defense}</p>
+      </div>
+      );
+    }
   }
 
   const generateName = () => {
@@ -120,19 +130,20 @@ export default function PlayerSelection() {
     console.log(createPlayer())
     return (lastName[lastNameSelect] + firstName[firstNameSelect] + secondLetterSelect)
   }
-  
-  
 
   useEffect(() => {
     // code to run on component mount
     console.log('rerender!!')
-    const player = createPlayer()
-    player.name = generateName();
-    setPlayer(player);
 
-    console.log(player.name)
+    for (var i = 0; i < 3; i ++){
+      const player = createPlayer()
+      player.name = generateName();
+      setPlayerList(playerList => [...playerList, player]);
+    }
+    console.log('array', playerList)
   }, [])
   
+
 
   
     return (
@@ -157,17 +168,23 @@ export default function PlayerSelection() {
         <ListItem button>
           <ListItemText primary={`${province}球员`} />
         </ListItem>
-        <ListItemLink  onClick={handleOpen}>
-          <ListItemText primary= {player.name} />
-        </ListItemLink>
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="simple-modal-title"
-          aria-describedby="simple-modal-description"
-        >
-         {renderPlayerStats(player)}
-        </Modal>
+        <List>
+        {playerList.map((player, index) => {
+          return (
+            <ListItem button onClick={() => handleOpen(index)}>
+            <ListItemText primary={player.name} />
+            </ListItem>
+          );
+        })}
+         <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+            >
+            {renderPlayerStats()}
+            </Modal>
+        </List>
       </List>
       </FormControl>
       <div>
