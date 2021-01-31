@@ -15,7 +15,12 @@ import Modal from '@material-ui/core/Modal';
 import { provinceData } from '../../public/data/province.js'
 import { lastName } from '../../public/data/lastName.js'
 import { firstName } from '../../public/data/firstName.js'
-import createPlayer  from '../../components/player.js'
+import {
+  createNormalPlayer, 
+  createElitePlayer, 
+  physicalCheck, 
+  techniqueCheck
+  }  from '../../components/player.js'
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -33,6 +38,10 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
   },
+  rarePlayer: {
+    color: '#800080',
+    fontWeight: 'bold',
+  }
 }));
 
 
@@ -115,6 +124,7 @@ export default function PlayerSelection() {
         <p id="simple-modal-description">投篮 {player.shooting}</p>
         <p id="simple-modal-description">传球 {player.pass}</p>
         <p id="simple-modal-description">防守 {player.defense}</p>
+        <p id="simple-modal-description">综合技术水平 {player.technique}</p>
       </div>
       );
     }
@@ -128,7 +138,7 @@ export default function PlayerSelection() {
     const secondLetter = Math.floor(Math.random() * 2);
     const secondLetterSelect = secondLetter === 1 ? firstName[Math.floor(Math.random() * 800)] : '';
     console.log('generated!!!!')
-    console.log(createPlayer())
+    console.log(createNormalPlayer())
     return (lastName[lastNameSelect] + firstName[firstNameSelect] + secondLetterSelect)
   }
 
@@ -137,7 +147,20 @@ export default function PlayerSelection() {
     console.log('rerender!!')
     if (!provinceList.includes(province)){
       for (var i = 0; i < 3; i ++){
-        const player = createPlayer()
+        let player;
+        const rarePlayer = Math.floor(Math.random() * 100);
+        console.log(rarePlayer, 'larger than 80');
+        
+        if(rarePlayer > 80) {
+          player = createElitePlayer();
+          player.rarity = "elite";
+        }
+        else {
+          player = createNormalPlayer();
+          player.rarity = "normal";
+        }
+        physicalCheck(player);
+        techniqueCheck(player);
         player.name = generateName();
         player.province = province;
         setPlayerList(playerList => [...playerList, player]);
@@ -178,9 +201,9 @@ export default function PlayerSelection() {
         {province != '' && playerList.map((player, index) => {
           if (player.province == province){
             return (
-              <ListItem button onClick={() => handleOpen(index)}>
-              <ListItemText primary={player.name} />
-              </ListItem>
+              <ListItem button onClick={() => handleOpen(index)} >
+              <ListItemText classes={{primary: player.rarity == 'elite' ? classes.rarePlayer : ''}} primary={player.name} />
+              </ListItem> //
             );
           }
         })}
