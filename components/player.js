@@ -1,36 +1,78 @@
-export function createNormalPlayer() {
+export const createNormalPlayer = () => {
+    const positionGenerate = Math.floor(Math.random() * 10) + 1
+    if ( positionGenerate > 5 )
+        return createInsidePlayer();
+    else 
+        return createOutsidePlayer();
+}
+
+const createInsidePlayer = () => {
     const player = {};
-    player['speed'] = Math.floor(Math.random() * 100); 
+    player['speed'] = Math.floor(Math.random() * 70); 
     player['strenth'] = Math.floor(Math.random() * 100); 
     player['jumping'] = Math.floor(Math.random() * 100); 
     player['stamina'] = Math.floor(Math.random() * 100); 
     player['fitness'] = Math.floor(Math.random() * 100);
 
     player['rebound'] = Math.floor(Math.random() * 100);
-    player['dribble'] = Math.floor(Math.random() * 100); 
-    player['shooting'] = Math.floor(Math.random() * 100); 
-    player['pass'] = Math.floor(Math.random() * 100); 
+    player['dribble'] = Math.floor(Math.random() * 70); 
+    player['shooting'] = Math.floor(Math.random() * 70); 
+    player['pass'] = Math.floor(Math.random() * 70); 
     player['defense'] = Math.floor(Math.random() * 100);
+    player['position'] = '内线';
+    player['height'] = Math.floor(Math.random() * 20) + 185;
+    return player
+}
+const createOutsidePlayer = () => {
+    const player = {};
+    player['speed'] = Math.floor(Math.random() * 100); 
+    player['strenth'] = Math.floor(Math.random() * 70); 
+    player['jumping'] = Math.floor(Math.random() * 100); 
+    player['stamina'] = Math.floor(Math.random() * 100); 
+    player['fitness'] = Math.floor(Math.random() * 100);
 
+    player['rebound'] = Math.floor(Math.random() * 70);
+    player['dribble'] = Math.floor(Math.random() * 100); 
+    player['shooting'] = Math.floor(Math.random() * 70); 
+    player['pass'] = Math.floor(Math.random() * 100); 
+    player['defense'] = Math.floor(Math.random() * 70);
+    player['position'] = '外线';
+    player['height'] = Math.floor(Math.random() * 30) + 165;
     return player
 }
 
-export const createElitePlayer = () => {
-    const player = {};
-    player['speed'] = Math.floor(Math.random() * 50) + 50; 
-    player['strenth'] = Math.floor(Math.random() * 50) + 50; 
+export const upgradeElitePlayer = (player) => {
+    if (player.position == '内线'){
+        return upgradeEliteInside(player);
+    }
+    else    
+        return upgradeEliteOutside(player) 
+
+}
+
+const upgradeEliteInside = (player) => {
+    player['strenth'] = Math.floor(Math.random() * 50) + 50;
     player['jumping'] = Math.floor(Math.random() * 50) + 50; 
     player['stamina'] = Math.floor(Math.random() * 50) + 50; 
     player['fitness'] = Math.floor(Math.random() * 50) + 50;
 
     player['rebound'] = Math.floor(Math.random() * 50) + 50;
-    player['dribble'] = Math.floor(Math.random() * 50) + 50; 
-    player['shooting'] = Math.floor(Math.random() * 50) + 50;  
-    player['pass'] = Math.floor(Math.random() * 50) + 50;  
-    player['defense'] = Math.floor(Math.random() * 50) + 50; 
-
-    return player
+    player['defense'] = Math.floor(Math.random() * 50) + 50;
+    player['shooting'] = Math.floor(Math.random() * 50) + 50;
 }
+
+const upgradeEliteOutside = (player) => {
+    player['speed'] = Math.floor(Math.random() * 50) + 50;
+    player['jumping'] = Math.floor(Math.random() * 50) + 50; 
+    player['stamina'] = Math.floor(Math.random() * 50) + 50; 
+    player['fitness'] = Math.floor(Math.random() * 50) + 50;
+
+    player['dribble'] = Math.floor(Math.random() * 50) + 50;
+    player['pass'] = Math.floor(Math.random() * 50) + 50;
+    player['shooting'] = Math.floor(Math.random() * 50) + 50;
+}
+
+
 
 //根据五项身体素质总和来评定球员身体素质
 export const physicalCheck = (player) => {

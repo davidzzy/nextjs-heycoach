@@ -17,7 +17,7 @@ import { lastName } from '../../public/data/lastName.js'
 import { firstName } from '../../public/data/firstName.js'
 import {
   createNormalPlayer, 
-  createElitePlayer, 
+  upgradeElitePlayer, 
   physicalCheck, 
   techniqueCheck
   }  from '../../components/player.js'
@@ -113,6 +113,8 @@ export default function PlayerSelection() {
       return (<div style={modalStyle} className={classes.paper}>
         <h2 id="simple-modal-title">球员详细数据</h2>
         <p id="simple-modal-description">姓名 {player.name}</p>
+        <p id="simple-modal-description">身高 {player.height}</p>
+        <p id="simple-modal-description">位置 {player.position}</p>
         <p id="simple-modal-description">速度 {player.speed}</p>
         <p id="simple-modal-description">力量 {player.strenth}</p>
         <p id="simple-modal-description">弹跳 {player.jumping}</p>
@@ -137,8 +139,6 @@ export default function PlayerSelection() {
     const lastNameSelect = Math.floor(Math.random() * 190);
     const secondLetter = Math.floor(Math.random() * 2);
     const secondLetterSelect = secondLetter === 1 ? firstName[Math.floor(Math.random() * 800)] : '';
-    console.log('generated!!!!')
-    console.log(createNormalPlayer())
     return (lastName[lastNameSelect] + firstName[firstNameSelect] + secondLetterSelect)
   }
 
@@ -150,14 +150,12 @@ export default function PlayerSelection() {
         let player;
         const rarePlayer = Math.floor(Math.random() * 100);
         console.log(rarePlayer, 'larger than 80');
-        
+        player = createNormalPlayer();
+        console.log('position', player)
+        player.rarity = "normal";
         if(rarePlayer > 80) {
-          player = createElitePlayer();
+          upgradeElitePlayer(player);
           player.rarity = "elite";
-        }
-        else {
-          player = createNormalPlayer();
-          player.rarity = "normal";
         }
         physicalCheck(player);
         techniqueCheck(player);
