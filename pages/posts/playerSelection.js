@@ -11,6 +11,11 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Select from '@material-ui/core/Select';
 import Modal from '@material-ui/core/Modal';
+import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+
+
 
 import { provinceData } from '../../public/data/province.js'
 import { lastName } from '../../public/data/lastName.js'
@@ -77,6 +82,7 @@ export default function PlayerSelection() {
   const [province, setProvince] = React.useState('');
   const [provinceList, setProvinceList] = React.useState([]);
   const [playerList, setPlayerList] = React.useState([]);
+  const [selectedPlayerList, setSelectedPlayerList] = React.useState([]);
   const [number, setNumber] = React.useState(0);
   const [open, setOpen] = React.useState(false);
   const classes = useStyles();
@@ -85,8 +91,10 @@ export default function PlayerSelection() {
     setProvince(event.target.value);
   };  
 
-  function ListItemLink(props) {
-    return <ListItem button component="a" {...props} />;
+  const selectPlayer = (player) => {
+    console.log('player selected!', player);
+    setSelectedPlayerList(selectedPlayerList => [...selectedPlayerList, player]);
+    handleClose();
   }
 
   const renderProvinces = () => {
@@ -99,7 +107,7 @@ export default function PlayerSelection() {
   
   const handleOpen = (index) => {
     setOpen(true);
-    setNumber(index)
+    setNumber(index);
   };
 
   const handleClose = () => {
@@ -110,7 +118,9 @@ export default function PlayerSelection() {
     console.log('data   ', number, playerList)
     if (playerList.length > 0){
       const player = playerList[number]
-      return (<div style={modalStyle} className={classes.paper}>
+      return (
+      <Container maxWidth="m">
+      <div style={modalStyle} className={classes.paper}>
         <h2 id="simple-modal-title">球员详细数据</h2>
         <p id="simple-modal-description">姓名 {player.name}</p>
         <p id="simple-modal-description">身高 {player.height}</p>
@@ -127,7 +137,11 @@ export default function PlayerSelection() {
         <p id="simple-modal-description">传球 {player.pass}</p>
         <p id="simple-modal-description">防守 {player.defense}</p>
         <p id="simple-modal-description">综合技术水平 {player.technique}</p>
+        <Button variant="contained" color="default" onClick={() => selectPlayer(player)}>
+        选择该球员
+      </Button>
       </div>
+      </Container>
       );
     }
   }
@@ -175,12 +189,13 @@ export default function PlayerSelection() {
   
     return (
       <Container maxWidth="sm">
-      <Box my={4}>
+      <Box component="div" display="inline">
         <Typography variant="h4" component="h1" gutterBottom>
           球员选择
         </Typography>
         从各省选择生源
       </Box>
+      <Box component="div" display="inline">
       <FormControl className={classes.formControl}>
         <InputLabel id="demo-simple-select-label">省份</InputLabel>
         <Select
@@ -216,10 +231,19 @@ export default function PlayerSelection() {
         </List>
       </List>
       </FormControl>
+      </Box>
       <div>
             <div className="text-container" dangerouslySetInnerHTML={{ __html: htmlText }} />
             <h1>球员选择</h1>
       </div>
+      <List>
+      {selectedPlayerList.map((player) => {
+            return (
+              <ListItemText classes={{primary: player.rarity == 'elite' ? classes.rarePlayer : ''}} primary={player.name} />
+            );
+          }
+        )}
+        </List>
     </Container>
     );
   }
