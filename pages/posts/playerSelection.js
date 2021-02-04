@@ -28,6 +28,11 @@ import {
   }  from '../../components/player.js'
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+    padding: theme.spacing(2),
+    wrap: 'nowrap',
+  },
   formControl: {
     margin: theme.spacing(2),
     minWidth: 200,
@@ -188,8 +193,9 @@ export default function PlayerSelection() {
 
   
     return (
-      <Container maxWidth="sm">
-      <Box component="div" display="inline">
+      <Grid container className={classes.root} direction={'row'} spacing={2}>
+          <Grid container justify="center">
+          <Grid><Box component="div" display="inline">
         <Typography variant="h4" component="h1" gutterBottom>
           球员选择
         </Typography>
@@ -232,7 +238,9 @@ export default function PlayerSelection() {
       </List>
       </FormControl>
       </Box>
-      <div>
+      </Grid>
+          <Grid>
+          <div>
             <div className="text-container" dangerouslySetInnerHTML={{ __html: htmlText }} />
             <h1>球员选择</h1>
       </div>
@@ -244,6 +252,10 @@ export default function PlayerSelection() {
           }
         )}
         </List>
-    </Container>
+          </Grid>
+            </Grid>
+      
+      
+    </Grid>
     );
   }
