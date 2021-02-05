@@ -89,7 +89,9 @@ export default function PlayerSelection() {
   const [playerList, setPlayerList] = React.useState([]);
   const [selectedPlayerList, setSelectedPlayerList] = React.useState([]);
   const [number, setNumber] = React.useState(0);
+  const [numberSelected, setNumberSelected] = React.useState(0);
   const [open, setOpen] = React.useState(false);
+  const [selectOpen, setSelectOpen] = React.useState(false);
   const classes = useStyles();
   const [modalStyle] = React.useState();
   const handleChange = (event) => {
@@ -97,9 +99,15 @@ export default function PlayerSelection() {
   };  
 
   const selectPlayer = (player) => {
-    console.log('player selected!', player);
     setSelectedPlayerList(selectedPlayerList => [...selectedPlayerList, player]);
     handleClose();
+  }
+
+  const removePlayer = (player) => {
+    const newSelectedList = selectedPlayerList.filter(p => p.name !== player.name);
+    console.log('newlist!', newSelectedList);
+    setSelectedPlayerList(newSelectedList);
+    handleSelectClose();
   }
 
   const renderProvinces = () => {
@@ -115,19 +123,28 @@ export default function PlayerSelection() {
     setNumber(index);
   };
 
+  const handleSelectOpen = (index) => {
+    setSelectOpen(true);
+    setNumberSelected(index);
+  };
+
   const handleClose = () => {
     setOpen(false);
   };
 
+  const handleSelectClose = () => {
+    setSelectOpen(false);
+  };
+
   const renderPlayerStats = () => {
-    console.log('data   ', number, playerList)
     if (playerList.length > 0){
       const player = playerList[number]
       return (
-      <Container maxWidth="m">
+      <Container maxWidth="md">
       <div style={modalStyle} className={classes.paper}>
         <h2 id="simple-modal-title">球员详细数据</h2>
         <p id="simple-modal-description">姓名 {player.name}</p>
+        <p id="simple-modal-description">省份 {player.province}</p>
         <p id="simple-modal-description">身高 {player.height}</p>
         <p id="simple-modal-description">位置 {player.position}</p>
         <p id="simple-modal-description">速度 {player.speed}</p>
@@ -151,6 +168,38 @@ export default function PlayerSelection() {
     }
   }
 
+  const renderSelectedPlayerStats = () => {
+    if (selectedPlayerList.length > 0){
+      const player = selectedPlayerList[numberSelected]
+      return (
+      <Container maxWidth="md">
+      <div style={modalStyle} className={classes.paper}>
+        <h2 id="simple-modal-title">球员详细数据</h2>
+        <p id="simple-modal-description">姓名 {player.name}</p>
+        <p id="simple-modal-description">省份 {player.province}</p>
+        <p id="simple-modal-description">身高 {player.height}</p>
+        <p id="simple-modal-description">位置 {player.position}</p>
+        <p id="simple-modal-description">速度 {player.speed}</p>
+        <p id="simple-modal-description">力量 {player.strenth}</p>
+        <p id="simple-modal-description">弹跳 {player.jumping}</p>
+        <p id="simple-modal-description">耐力 {player.stamina}</p>
+        <p id="simple-modal-description">体质 {player.fitness}</p>
+        <p id="simple-modal-description">综合身体素质 {player.physical}</p>
+        <p id="simple-modal-description">篮板 {player.rebound}</p>
+        <p id="simple-modal-description">运球 {player.dribble}</p>
+        <p id="simple-modal-description">投篮 {player.shooting}</p>
+        <p id="simple-modal-description">传球 {player.pass}</p>
+        <p id="simple-modal-description">防守 {player.defense}</p>
+        <p id="simple-modal-description">综合技术水平 {player.technique}</p>
+        <Button variant="contained" color="default" onClick={() => removePlayer(player)}>
+        取消选择
+      </Button>
+      </div>
+      </Container>
+      );
+    }
+  }
+
   const generateName = () => {
     //firstName.length 800
     //lastName.length 190
@@ -163,8 +212,9 @@ export default function PlayerSelection() {
 
   useEffect(() => {
     // code to run on component mount
-    console.log('rerender!!')
-    if (!provinceList.includes(province)){
+    console.log(province  ,'pronvice change!', province === '')
+    if (!provinceList.includes(province) &&  province !== ''){
+      console.log('rerender');
       for (var i = 0; i < 3; i ++){
         let player;
         const rarePlayer = Math.floor(Math.random() * 100);
@@ -242,15 +292,26 @@ export default function PlayerSelection() {
           <Grid>
           <div>
             <div className="text-container" dangerouslySetInnerHTML={{ __html: htmlText }} />
-            <h1>球员选择</h1>
+            <h1>已选择球员</h1>
       </div>
       <List>
-      {selectedPlayerList.map((player) => {
+      {selectedPlayerList.map((player, index) => {
             return (
+              <ListItem button onClick={() => handleSelectOpen(index)} >
               <ListItemText classes={{primary: player.rarity == 'elite' ? classes.rarePlayer : ''}} primary={player.name} />
+              </ListItem>
+              
             );
           }
         )}
+        <Modal
+            open={selectOpen}
+            onClose={handleSelectClose}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+            >
+            {renderSelectedPlayerStats()}
+            </Modal>
         </List>
           </Grid>
             </Grid>
