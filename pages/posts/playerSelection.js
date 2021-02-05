@@ -99,7 +99,10 @@ export default function PlayerSelection() {
   };  
 
   const selectPlayer = (player) => {
+    if (!selectedPlayerList.some(p => p.name === player.name)){
     setSelectedPlayerList(selectedPlayerList => [...selectedPlayerList, player]);
+    console.log('new player selected!', selectedPlayerList);
+    }
     handleClose();
   }
 
@@ -125,6 +128,7 @@ export default function PlayerSelection() {
 
   const handleSelectOpen = (index) => {
     setSelectOpen(true);
+    console.log('current selected number', index)
     setNumberSelected(index);
   };
 
@@ -169,7 +173,8 @@ export default function PlayerSelection() {
   }
 
   const renderSelectedPlayerStats = () => {
-    if (selectedPlayerList.length > 0){
+    if (selectedPlayerList.length > 0  && selectedPlayerList.length > numberSelected){
+      console.log(selectedPlayerList.length, ' vs ', numberSelected)
       const player = selectedPlayerList[numberSelected]
       return (
       <Container maxWidth="md">
