@@ -27,6 +27,7 @@ import {
   physicalCheck, 
   techniqueCheck
   }  from '../../components/player.js'
+import { Component } from 'react';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -116,13 +117,10 @@ export default function PlayerSelection() {
     setSelectOpen(false);
   };
 
-  const renderPlayerStats = () => {
-    if (playerList.length > 0){
-      const player = playerList[number]
-      return (
-      <Container maxWidth="md">
-      <div style={modalStyle} className={classes.paper}>
-        <h2 id="simple-modal-title">球员详细数据</h2>
+  const PlayerStatsComponent = (props) => { 
+    const player = props.player
+    return <div>
+      <h2 id="simple-modal-title">球员详细数据</h2>
         <p id="simple-modal-description">姓名 {player.name}</p>
         <p id="simple-modal-description">省份 {player.province}</p>
         <p id="simple-modal-description">身高 {player.height}</p>
@@ -138,10 +136,23 @@ export default function PlayerSelection() {
         <p id="simple-modal-description">投篮 {player.shooting}</p>
         <p id="simple-modal-description">传球 {player.pass}</p>
         <p id="simple-modal-description">防守 {player.defense}</p>
-        <p id="simple-modal-description">综合技术水平 {player.technique}</p>
+        <p id="simple-modal-description">综合技术水平 {player.technique}</p></div>
+}
+  //const Wrap = (player) => {(<div>{playerStatsComponent(player)}</div>)};
+
+  const renderPlayerStats = () => {
+    if (playerList.length > 0){
+      
+      const player = playerList[number]
+      return (
+      <Container maxWidth="md">
+      <div style={modalStyle} className={classes.paper}>
+      <p id="simple-modal-description">姓名 {player.name}</p>
+        <PlayerStatsComponent player={player}/>
         <Button variant="contained" color="default" onClick={() => selectPlayer(player)}>
-        选择该球员
-      </Button>
+          选择该球员
+        </Button>
+        
       </div>
       </Container>
       );
@@ -155,23 +166,7 @@ export default function PlayerSelection() {
       return (
       <Container maxWidth="md">
       <div style={modalStyle} className={classes.paper}>
-        <h2 id="simple-modal-title">球员详细数据</h2>
-        <p id="simple-modal-description">姓名 {player.name}</p>
-        <p id="simple-modal-description">省份 {player.province}</p>
-        <p id="simple-modal-description">身高 {player.height}</p>
-        <p id="simple-modal-description">位置 {player.position}</p>
-        <p id="simple-modal-description">速度 {player.speed}</p>
-        <p id="simple-modal-description">力量 {player.strenth}</p>
-        <p id="simple-modal-description">弹跳 {player.jumping}</p>
-        <p id="simple-modal-description">耐力 {player.stamina}</p>
-        <p id="simple-modal-description">体质 {player.fitness}</p>
-        <p id="simple-modal-description">综合身体素质 {player.physical}</p>
-        <p id="simple-modal-description">篮板 {player.rebound}</p>
-        <p id="simple-modal-description">运球 {player.dribble}</p>
-        <p id="simple-modal-description">投篮 {player.shooting}</p>
-        <p id="simple-modal-description">传球 {player.pass}</p>
-        <p id="simple-modal-description">防守 {player.defense}</p>
-        <p id="simple-modal-description">综合技术水平 {player.technique}</p>
+      <PlayerStatsComponent player={player}/>
         <Button variant="contained" color="default" onClick={() => removePlayer(player)}>
         取消选择
       </Button>
