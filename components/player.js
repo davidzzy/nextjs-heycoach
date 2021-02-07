@@ -1,3 +1,7 @@
+import { legendaryPlayers } from '../public/data/legendaryPlayers'
+
+let legendaryList = legendaryPlayers
+
 export const createNormalPlayer = () => {
     const positionGenerate = Math.floor(Math.random() * 10) + 1
     if ( positionGenerate > 5 )
@@ -50,6 +54,19 @@ export const upgradeElitePlayer = (player) => {
 
 }
 
+export const upgradeLegendaryPlayer = (player) => {
+    if (legendaryList.length > 0) {
+        const randomSelect = Math.floor(legendaryList.length) - 1;
+        console.log('randomSelect', randomSelect, legendaryList[randomSelect])
+        const selectedPlayer = legendaryList[randomSelect];
+        legendaryList = legendaryList.filter(p => p.name !== selectedPlayer.name);
+        console.log('removed', legendaryList)
+        selectedPlayer.rarity = "legendary"
+        return selectedPlayer
+    }
+    return player
+}
+
 const upgradeEliteInside = (player) => {
     player['strenth'] = Math.floor(Math.random() * 50) + 50;
     player['jumping'] = Math.floor(Math.random() * 50) + 50; 
@@ -59,6 +76,7 @@ const upgradeEliteInside = (player) => {
     player['rebound'] = Math.floor(Math.random() * 50) + 50;
     player['defense'] = Math.floor(Math.random() * 50) + 50;
     player['shooting'] = Math.floor(Math.random() * 50) + 50;
+    player.rarity = "elite";
 }
 
 const upgradeEliteOutside = (player) => {
@@ -70,6 +88,7 @@ const upgradeEliteOutside = (player) => {
     player['dribble'] = Math.floor(Math.random() * 50) + 50;
     player['pass'] = Math.floor(Math.random() * 50) + 50;
     player['shooting'] = Math.floor(Math.random() * 50) + 50;
+    player.rarity = "elite";
 }
 
 

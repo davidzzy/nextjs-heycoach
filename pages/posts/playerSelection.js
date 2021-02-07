@@ -23,7 +23,8 @@ import { firstName } from '../../public/data/firstName.js'
 import { htmlData } from '../../public/data/htmlData.js'
 import {
   createNormalPlayer, 
-  upgradeElitePlayer, 
+  upgradeElitePlayer,
+  upgradeLegendaryPlayer, 
   physicalCheck, 
   techniqueCheck
   }  from '../../components/player.js'
@@ -50,8 +51,12 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
   },
-  rarePlayer: {
+  elite: {
     color: '#800080',
+    fontWeight: 'bold',
+  },
+  legendary: {
+    color: '#ffa500',
     fontWeight: 'bold',
   }
 }));
@@ -198,13 +203,17 @@ export default function PlayerSelection() {
         player = createNormalPlayer();
         console.log('position', player)
         player.rarity = "normal";
-        if(rarePlayer > 80) {
+        player.name = generateName();
+        
+        if(rarePlayer >= 70 && rarePlayer < 95) {
           upgradeElitePlayer(player);
-          player.rarity = "elite";
+        }
+        else if(rarePlayer >= 95) {
+          player = upgradeLegendaryPlayer(player);
+          console.log('lengdary player', player)
         }
         physicalCheck(player);
         techniqueCheck(player);
-        player.name = generateName();
         player.province = province;
         setPlayerList(playerList => [...playerList, player]);
         // save here then filter out by province
@@ -247,7 +256,7 @@ export default function PlayerSelection() {
           if (player.province == province){
             return (
               <ListItem button onClick={() => handleOpen(index)} >
-              <ListItemText classes={{primary: player.rarity == 'elite' ? classes.rarePlayer : ''}} primary={player.name} />
+              <ListItemText classes={{primary: classes[player.rarity]}} primary={player.name} />
               </ListItem> //
             );
           }
@@ -274,7 +283,7 @@ export default function PlayerSelection() {
       {selectedPlayerList.map((player, index) => {
             return (
               <ListItem button onClick={() => handleSelectOpen(index)} >
-              <ListItemText classes={{primary: player.rarity == 'elite' ? classes.rarePlayer : ''}} primary={player.name} />
+              <ListItemText classes={{primary: classes[player.rarity]}} primary={player.name} />
               </ListItem>
               
             );
