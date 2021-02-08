@@ -81,7 +81,11 @@ export default function PlayerSelection() {
   };  
 
   const selectPlayer = (player) => {
-    if (!selectedPlayerList.some(p => p.name === player.name)){
+    if ( selectedPlayerList.length >= 5 || selectedPlayerList.some(p => p.name === player.name)){
+      alert("选择上限或球员已被选择!");
+    }
+
+    else {
     setSelectedPlayerList(selectedPlayerList => [...selectedPlayerList, player]);
     console.log('new player selected!', selectedPlayerList);
     }
