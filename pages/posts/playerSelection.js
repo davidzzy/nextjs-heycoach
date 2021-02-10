@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useRouter } from 'next/router'
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
@@ -28,7 +29,7 @@ import {
   physicalCheck, 
   techniqueCheck
   }  from '../../components/player.js'
-import { Component } from 'react';
+import MatchGround from './matchGround.js'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -76,6 +77,7 @@ export default function PlayerSelection() {
   const [selectOpen, setSelectOpen] = React.useState(false);
   const classes = useStyles();
   const [modalStyle] = React.useState();
+  const router = useRouter()
   const handleChange = (event) => {
     setProvince(event.target.value);
   };  
@@ -195,6 +197,23 @@ export default function PlayerSelection() {
     return (lastName[lastNameSelect] + firstName[firstNameSelect] + secondLetterSelect)
   }
 
+  const MyButton = React.forwardRef(({ onClick, href }, ref) => {
+    return (
+      <a href={href} onClick={onClick} ref={ref}>
+        Click Me
+      </a>
+    )
+  })
+
+  const startMatch = () => {
+    console.log(selectedPlayerList)
+    const sendPlayer = selectedPlayerList
+    localStorage.setItem('selectedPlayer', JSON.stringify(selectedPlayerList))
+    router.push({
+      pathname:'/posts/matchGround'
+    })
+  }
+
   useEffect(() => {
     // code to run on component mount
     console.log(province  ,'pronvice change!', province === '')
@@ -302,6 +321,7 @@ export default function PlayerSelection() {
             {renderSelectedPlayerStats()}
             </Modal>
         </List>
+        <Button variant="contained" onClick = {startMatch} color="secondary">准备开赛</Button>
           </Grid>
             </Grid>
       
