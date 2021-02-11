@@ -8,8 +8,15 @@ import {
   IconButton,
   ListItemSecondaryAction
 } from "@material-ui/core";
+import Container from '@material-ui/core/Container';
 import RootRef from "@material-ui/core/RootRef";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import {sortableContainer, sortableElement} from 'react-sortable-hoc';
+
+const SortableItem = sortableElement(({value}) => <li>{value}</li>);
+
+const SortableContainer = sortableContainer(({children}) => {
+  return <ul>{children}</ul>;
+});
 
 function MatchGround({ router: { query } }) {
   const [playerList, setPlayerList] = React.useState([]);
@@ -21,84 +28,31 @@ function MatchGround({ router: { query } }) {
   useEffect(() => {
     // code to run on component mount
     var selectedList = JSON.parse(localStorage.getItem('selectedPlayer'))
-    setIndex(selectedList)
     setPlayerList(selectedList)
     console.log('list', selectedList)
   },[])
-    const setIndex = (selectedList) => {
-      selectedList.forEach((player,index) => player.id = index)
-    }
-    const reorder = (list, startIndex, endIndex) => {
-      const result = Array.from(list);
-      const [removed] = result.splice(startIndex, 1);
-      result.splice(endIndex, 0, removed);
-      console.log('reorder',result)
-      return result;
-    };
-    const getItemStyle = (isDragging, draggableStyle) => ({
-      // styles we need to apply on draggables
-      ...draggableStyle,
-    
-      ...(isDragging && {
-        background: "rgb(235,235,235)"
-      })
-    });
-    const getListStyle = isDraggingOver => ({
-      //background: isDraggingOver ? 'lightblue' : 'lightgrey',
-    });
 
-    const onDragEnd = useCallback((result) => {
-       // dropped outside the list
-       if (!result.destination) {
-        return;
-      }
-  
-      const items = reorder(
-        playerList,
-        result.source.index,
-        result.destination.index
-      );
-  
-      setPlayerList(items)
-      // the only one that is required
-    }, []);
+  const onSortEnd = ({oldIndex, newIndex}) => {
+    setPlayerList(arrayMove(playerList, oldIndex, newIndex))
+  };
 
-    console.log('playerList', query)
-    return (
-      <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable droppableId="droppable">
-        {(provided, snapshot) => (
-          <RootRef rootRef={provided.innerRef}>
-            <List style={getListStyle(snapshot.isDraggingOver)}>
-              {playerList.length > 0 && playerList.map((item, index) => (
-                <Draggable key={item.id} draggableId={item.id} index={index}>
-                  {(provided, snapshot) => (
-                    <ListItem
-                      ContainerComponent="li"
-                      ContainerProps={{ ref: provided.innerRef }}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      style={getItemStyle(
-                        snapshot.isDragging,
-                        provided.draggableProps.style
-                      )}
-                    >
-                      <ListItemText
-                        primary={item.name}
-                      />
-                      <ListItemSecondaryAction>
-                      </ListItemSecondaryAction>
-                    </ListItem>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-            </List>
-          </RootRef>
-        )}
-      </Droppable>
-    </DragDropContext>
-    )
+  const arrayMove = (array, from, to) => {
+    // Will be deprecated soon. Consumers should install 'array-move' instead
+    // https://www.npmjs.com/package/array-move
+  
+    array = array.slice();
+    array.splice(to < 0 ? array.length + to : to, 0, array.splice(from, 1)[0]);
+  
+    return array;
+  }
+
+  return (
+      <SortableContainer onSortEnd={onSortEnd}>
+        {playerList.length > 0 && playerList.map((player, index) => (
+          <SortableItem key={player.name} index={index} value={player.name} player ={player} />
+        ))}
+      </SortableContainer>
+  );
 }
 
 export default withRouter(MatchGround);
