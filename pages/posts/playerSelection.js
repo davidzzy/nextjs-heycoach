@@ -207,6 +207,8 @@ export default function PlayerSelection() {
 
   const startMatch = () => {
     console.log(selectedPlayerList)
+    // TODO: 至少选择五个人进行比赛
+
     const sendPlayer = selectedPlayerList
     localStorage.setItem('selectedPlayer', JSON.stringify(selectedPlayerList))
     router.push({

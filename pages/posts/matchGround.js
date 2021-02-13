@@ -1,29 +1,41 @@
 import React, { useEffect, useCallback } from 'react';
 import { withRouter } from 'next/router';
-import {
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
-  IconButton,
-  ListItemSecondaryAction
-} from "@material-ui/core";
 import Container from '@material-ui/core/Container';
-import RootRef from "@material-ui/core/RootRef";
 import {sortableContainer, sortableElement} from 'react-sortable-hoc';
+import { makeStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+import Modal from '@material-ui/core/Modal';
 
-const SortableItem = sortableElement(({value}) => <li>{value}</li>);
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex', 
+    alignitems: 'flex-start'
+  },
+  paper: {
+    position: 'absolute',
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
+}));
+
+
+
+function MatchGround({ router: { query } }) {
+  const [playerList, setPlayerList] = React.useState([]);
+  const [open, setOpen] = React.useState(false);
+  const [modalStyle] = React.useState();
+  const [number, setNumber] = React.useState(0);
+  const classes = useStyles();
+
+const SortableItem = sortableElement(({value}) => <li className="SortableItem"> {value}</li>);
 
 const SortableContainer = sortableContainer(({children}) => {
   return <ul>{children}</ul>;
 });
-
-function MatchGround({ router: { query } }) {
-  const [playerList, setPlayerList] = React.useState([]);
-  if (typeof window !== 'undefined'){
-    
-    
-  }
 
   useEffect(() => {
     // code to run on component mount
@@ -46,12 +58,80 @@ function MatchGround({ router: { query } }) {
     return array;
   }
 
+  const handleOpen = (index) => {
+    console.log('clicked!!!')
+    setOpen(true);
+    setNumber(index);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+  
+  const PositionRender = () => {
+    return (
+      <ul> 
+      <li onClick={() => handleOpen(0)}>中锋</li>
+      <li onClick={() => handleOpen(1)}>大前锋</li>
+      <li onClick={() => handleOpen(2)}>小前锋</li>
+      <li onClick={() => handleOpen(3)}>得分后卫</li>
+      <li onClick={() => handleOpen(4)}>控球后卫</li>
+      </ul>
+    )
+  }
+
+  const PlayerStatsComponent = () => { 
+    if (playerList.length >= number){
+    const player = playerList[number]
+    if(player?.name){
+    return (
+      <Container maxWidth="md">
+    <div style={modalStyle} className={classes.paper}>
+      <h2 id="simple-modal-title">球员详细数据</h2>
+        <p id="simple-modal-description">姓名 {player.name}</p>
+        <p id="simple-modal-description">省份 {player.province}</p>
+        <p id="simple-modal-description">身高 {player.height}</p>
+        <p id="simple-modal-description">位置 {player.position}</p>
+        <p id="simple-modal-description">速度 {player.speed}</p>
+        <p id="simple-modal-description">力量 {player.strenth}</p>
+        <p id="simple-modal-description">弹跳 {player.jumping}</p>
+        <p id="simple-modal-description">耐力 {player.stamina}</p>
+        <p id="simple-modal-description">体质 {player.fitness}</p>
+        <p id="simple-modal-description">综合身体素质 {player.physical}</p>
+        <p id="simple-modal-description">篮板 {player.rebound}</p>
+        <p id="simple-modal-description">运球 {player.dribble}</p>
+        <p id="simple-modal-description">投篮 {player.shooting}</p>
+        <p id="simple-modal-description">传球 {player.pass}</p>
+        <p id="simple-modal-description">防守 {player.defense}</p>
+        <p id="simple-modal-description">综合技术水平 {player.technique}</p></div>
+        </Container>
+      )
+    }
+  }
+}
+
   return (
+    
+    <Container >
+      <Typography>拖动球员姓名选择位置,点击位置查看球员属性</Typography>
+      <Grid container className={classes.root}>
+      <PositionRender/>
+      <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+            >
+            {PlayerStatsComponent()}
+            </Modal>
       <SortableContainer onSortEnd={onSortEnd}>
         {playerList.length > 0 && playerList.map((player, index) => (
-          <SortableItem key={player.name} index={index} value={player.name} player ={player} />
+          <SortableItem key={player.name} index={index} value={player.name} />
         ))}
+         
       </SortableContainer>
+      </Grid>
+      </Container>
   );
 }
 
