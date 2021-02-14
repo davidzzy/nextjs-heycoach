@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Modal from '@material-ui/core/Modal';
+import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,6 +30,7 @@ function MatchGround({ router: { query } }) {
   const [open, setOpen] = React.useState(false);
   const [modalStyle] = React.useState();
   const [number, setNumber] = React.useState(0);
+  const [gameText, setGameText] = React.useState([])
   const classes = useStyles();
 
 const SortableItem = sortableElement(({value}) => <li className="SortableItem"> {value}</li>);
@@ -67,6 +69,23 @@ const SortableContainer = sortableContainer(({children}) => {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const startGame = async () => {
+    console.log('list', playerList)
+    let i = 0; 
+    while (i < playerList.length) { 
+      delayDisplay(i); 
+      i++; 
+    } 
+    console.log('text', gameText)
+  }
+
+  const delayDisplay = (i) => {
+    setTimeout(function() { 
+      console.log(playerList[i]);
+      setGameText(gameText => [...gameText, playerList[i].name]); 
+    }, 1000 * i); 
+  }// TODO: 转换成正常的游戏文字！
   
   const PositionRender = () => {
     return (
@@ -110,6 +129,10 @@ const SortableContainer = sortableContainer(({children}) => {
   }
 }
 
+const GameState = () => {
+  
+}
+
   return (
     
     <Container >
@@ -131,6 +154,10 @@ const SortableContainer = sortableContainer(({children}) => {
          
       </SortableContainer>
       </Grid>
+      <Button variant="contained" color="primary" onClick={() => startGame()}>开始比赛</Button>
+      {gameText.length > 0 && gameText.map((text) => (
+          <Typography>{text}</Typography>
+        ))}
       </Container>
   );
 }
