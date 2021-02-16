@@ -72,19 +72,31 @@ const SortableContainer = sortableContainer(({children}) => {
 
   const startGame = async () => {
     console.log('list', playerList)
-    let i = 0; 
-    while (i < playerList.length) { 
-      delayDisplay(i); 
+    let i = 0, timer = 120;
+    while (timer > 0) { 
+      delayDisplay(i, timer); 
+      timer = updateTime(timer)
+      console.log(timer, 'time')
       i++; 
-    } 
+    }
+    delayDisplay(i, 0);
     console.log('text', gameText)
   }
 
-  const delayDisplay = (i) => {
+  const updateTime = (timer) => {
+    return (timer - (Math.floor(Math.random() * 16) + 8)) // 进攻时间在8到24秒之间
+  }
+
+  const convertTime = (timer) => {
+    const minutes = Math.floor(timer / 60)
+    const seconds = Math.floor(timer % 60)
+    return minutes +':'+ (seconds < 10 == 1 ? '0':'') + Math.floor(timer % 60);
+  }
+
+  const delayDisplay = (i, timer) => {
     setTimeout(function() { 
-      console.log(playerList[i]);
-      setGameText(gameText => [...gameText, playerList[i].name]); 
-    }, 1000 * i); 
+      setGameText(gameText => [...gameText, convertTime(timer)]); 
+    }, 500 * i); 
   }// TODO: 转换成正常的游戏文字！
   
   const PositionRender = () => {
