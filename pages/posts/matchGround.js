@@ -72,14 +72,15 @@ const SortableContainer = sortableContainer(({children}) => {
 
   const startGame = async () => {
     console.log('list', playerList)
-    let i = 0, timer = 120;
+    let i = 0, timer = 120, gameState = true;
     while (timer > 0) { 
-      delayDisplay(i, timer); 
+      delayDisplay(i, timer, gameState); 
       timer = updateTime(timer)
       console.log(timer, 'time')
-      i++; 
+      i++;
+      gameState = !gameState 
     }
-    delayDisplay(i, 0);
+    delayDisplay(i, 0, gameState);
     console.log('text', gameText)
   }
 
@@ -93,9 +94,11 @@ const SortableContainer = sortableContainer(({children}) => {
     return minutes +':'+ (seconds < 10 == 1 ? '0':'') + Math.floor(timer % 60);
   }
 
-  const delayDisplay = (i, timer) => {
+  const delayDisplay = (i, timer, gameState) => {
     setTimeout(function() { 
-      setGameText(gameText => [...gameText, convertTime(timer)]); 
+      const text = convertTime(timer) + (gameState ? '我方进攻' : '对方进攻')
+      setGameText(gameText => [...gameText, text]); 
+      gameState = !gameState
     }, 500 * i); 
   }// TODO: 转换成正常的游戏文字！
   
@@ -139,10 +142,6 @@ const SortableContainer = sortableContainer(({children}) => {
       )
     }
   }
-}
-
-const GameState = () => {
-  
 }
 
   return (
