@@ -29,7 +29,6 @@ import {
   physicalCheck, 
   techniqueCheck
   }  from '../../components/player.js'
-import MatchGround from './matchGround.js'
 
 const useStyles = makeStyles((theme) => ({
   root: {

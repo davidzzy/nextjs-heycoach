@@ -7,6 +7,9 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Modal from '@material-ui/core/Modal';
 import Button from '@material-ui/core/Button';
+import {
+  generatePlay
+  }  from '../../components/matchSimulation.js'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -74,13 +77,15 @@ const SortableContainer = sortableContainer(({children}) => {
     console.log('list', playerList)
     let i = 0, timer = 120, gameState = true;
     while (timer > 0) { 
-      delayDisplay(i, timer, gameState); 
+      const text = generatePlay({timer, gameState, playerList})
+      delayDisplay(i, text); 
       timer = updateTime(timer)
       console.log(timer, 'time')
       i++;
       gameState = !gameState 
     }
-    delayDisplay(i, 0, gameState);
+    const text = generatePlay({timer, gameState, playerList})
+    delayDisplay(i, text);
     console.log('text', gameText)
   }
 
@@ -88,17 +93,11 @@ const SortableContainer = sortableContainer(({children}) => {
     return (timer - (Math.floor(Math.random() * 16) + 8)) // 进攻时间在8到24秒之间
   }
 
-  const convertTime = (timer) => {
-    const minutes = Math.floor(timer / 60)
-    const seconds = Math.floor(timer % 60)
-    return minutes +':'+ (seconds < 10 == 1 ? '0':'') + Math.floor(timer % 60);
-  }
+  
 
-  const delayDisplay = (i, timer, gameState) => {
+  const delayDisplay = (i, text) => {
     setTimeout(function() { 
-      const text = convertTime(timer) + (gameState ? '我方进攻' : '对方进攻')
       setGameText(gameText => [...gameText, text]); 
-      gameState = !gameState
     }, 500 * i); 
   }// TODO: 转换成正常的游戏文字！
   
