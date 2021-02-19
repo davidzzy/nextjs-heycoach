@@ -75,18 +75,25 @@ const SortableContainer = sortableContainer(({children}) => {
 
   const startGame = async () => {
     console.log('list', playerList)
-    let i = 0, timer = 120, gameState = true;
-    while (timer > 0) { 
-      const text = generatePlay({timer, gameState, playerList})
-      delayDisplay(i, text); 
-      timer = updateTime(timer)
-      console.log(timer, 'time')
-      i++;
-      gameState = !gameState 
+    let i = 0;
+    let gameData = {
+      timer: 120,
+      gameState: true,
+      teamScore: 0,
+      enemyScore: 0,
+      playerList
     }
-    const text = generatePlay({timer, gameState, playerList})
-    delayDisplay(i, text);
-    console.log('text', gameText)
+    while (gameData.timer > 0) { 
+      gameData = generatePlay(gameData)
+      delayDisplay(i, gameData.playText); 
+      gameData.timer = updateTime(gameData.timer)
+      console.log(gameData.timer, 'time')
+      i++;
+      gameData.gameState = !gameData.gameState 
+    }
+    gameData = generatePlay(gameData)
+    delayDisplay(i, gameData.playText);
+    console.log('text', gameData.gameText)
   }
 
   const updateTime = (timer) => {

@@ -1,15 +1,17 @@
 
-export const generatePlay = ({timer, gameState, playerList}) => {
+export const generatePlay = (gameData) => {
     let playText;
-    if (gameState){
-        const playerSelected = Math.floor(Math.random() * playerList.length)
-        playText = playerList[playerSelected].name + '进攻'
+    if (gameData.gameState){
+        const playerSelected = Math.floor(Math.random() * gameData.playerList.length)
+        const player = gameData.playerList[playerSelected]
+        playText = shooting(player) ? 
+        player.name + '命中' : player.name + '不中'
     } 
     else {
         playText = '对方进攻'
     }
-    playText = playText + ' 时间:' + convertTime(timer > 0 ? timer : 0)
-    return playText;
+    gameData.playText = playText + ' 时间:' + convertTime(gameData.timer > 0 ? gameData.timer : 0)
+    return gameData;
 }
 
 const convertTime = (timer) => {
@@ -17,3 +19,11 @@ const convertTime = (timer) => {
     const seconds = Math.floor(timer % 60)
     return minutes +':'+ (seconds < 10 == 1 ? '0':'') + Math.floor(timer % 60);
   }
+
+const shooting = (player) => {
+    const shootingChance = Math.floor(Math.random() * 100);
+    console.log(player.shooting, shootingChance, '投篮概率') 
+    if (player.shooting > shootingChance)
+        return true;
+    return false;
+}
