@@ -1,6 +1,18 @@
 import { legendaryPlayers } from '../public/data/legendaryPlayers'
+import { lastName } from '../public/data/lastName.js'
+import { firstName } from '../public/data/firstName.js'
 
 let legendaryList = legendaryPlayers
+
+const generateName = () => {
+    //firstName.length 800
+    //lastName.length 190
+    const firstNameSelect = Math.floor(Math.random() * 800); 
+    const lastNameSelect = Math.floor(Math.random() * 190);
+    const secondLetter = Math.floor(Math.random() * 2);
+    const secondLetterSelect = secondLetter === 1 ? firstName[Math.floor(Math.random() * 800)] : '';
+    return (lastName[lastNameSelect] + firstName[firstNameSelect] + secondLetterSelect)
+  }
 
 export const createNormalPlayer = () => {
     const positionGenerate = Math.floor(Math.random() * 10) + 1
@@ -25,6 +37,7 @@ const createInsidePlayer = () => {
     player['defense'] = Math.floor(Math.random() * 100);
     player['position'] = '内线';
     player['height'] = Math.floor(Math.random() * 20) + 185;
+    player.name = generateName();
     return player
 }
 const createOutsidePlayer = () => {
@@ -42,6 +55,7 @@ const createOutsidePlayer = () => {
     player['defense'] = Math.floor(Math.random() * 70);
     player['position'] = '外线';
     player['height'] = Math.floor(Math.random() * 30) + 165;
+    player.name = generateName();
     return player
 }
 

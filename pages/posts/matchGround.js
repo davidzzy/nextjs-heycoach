@@ -7,9 +7,8 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Modal from '@material-ui/core/Modal';
 import Button from '@material-ui/core/Button';
-import {
-  generatePlay
-  }  from '../../components/matchSimulation.js'
+import {generatePlay}  from '../../components/matchSimulation.js'
+import {createNormalPlayer}  from '../../components/player.js'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,8 +27,9 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-function MatchGround({ router: { query } }) {
+function MatchGround() {
   const [playerList, setPlayerList] = React.useState([]);
+  const [enemyList, setEnemyList] = React.useState([]);
   const [open, setOpen] = React.useState(false);
   const [modalStyle] = React.useState();
   const [number, setNumber] = React.useState(0);
@@ -45,8 +45,14 @@ const SortableContainer = sortableContainer(({children}) => {
   useEffect(() => {
     // code to run on component mount
     var selectedList = JSON.parse(localStorage.getItem('selectedPlayer'))
+    var enemyList = [];
+    for (var i = 0; i < 5; i++){
+      enemyList.push(createNormalPlayer())
+    }
     setPlayerList(selectedList)
+    setEnemyList(enemyList)
     console.log('list', selectedList)
+    console.log('list', enemyList)
   },[])
 
   const onSortEnd = ({oldIndex, newIndex}) => {
@@ -81,7 +87,8 @@ const SortableContainer = sortableContainer(({children}) => {
       gameState: true,
       teamScore: 0,
       enemyScore: 0,
-      playerList
+      playerList,
+      enemyList
     }
     while (gameData.timer > 0) { 
       gameData = generatePlay(gameData)
@@ -93,7 +100,6 @@ const SortableContainer = sortableContainer(({children}) => {
     }
     gameData = generatePlay(gameData)
     delayDisplay(i, gameData.playText);
-    console.log('text', gameData.gameText)
   }
 
   const updateTime = (timer) => {

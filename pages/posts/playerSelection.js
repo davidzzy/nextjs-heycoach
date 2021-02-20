@@ -19,8 +19,6 @@ import Grid from '@material-ui/core/Grid';
 
 
 import { provinceData } from '../../public/data/province.js'
-import { lastName } from '../../public/data/lastName.js'
-import { firstName } from '../../public/data/firstName.js'
 import { htmlData } from '../../public/data/htmlData.js'
 import {
   createNormalPlayer, 
@@ -186,16 +184,6 @@ export default function PlayerSelection() {
     }
   }
 
-  const generateName = () => {
-    //firstName.length 800
-    //lastName.length 190
-    const firstNameSelect = Math.floor(Math.random() * 800); 
-    const lastNameSelect = Math.floor(Math.random() * 190);
-    const secondLetter = Math.floor(Math.random() * 2);
-    const secondLetterSelect = secondLetter === 1 ? firstName[Math.floor(Math.random() * 800)] : '';
-    return (lastName[lastNameSelect] + firstName[firstNameSelect] + secondLetterSelect)
-  }
-
   const MyButton = React.forwardRef(({ onClick, href }, ref) => {
     return (
       <a href={href} onClick={onClick} ref={ref}>
@@ -227,7 +215,6 @@ export default function PlayerSelection() {
         player = createNormalPlayer();
         console.log('position', player)
         player.rarity = "normal";
-        player.name = generateName();
         
         if(rarePlayer >= 70 && rarePlayer < 95) {
           upgradeElitePlayer(player);
