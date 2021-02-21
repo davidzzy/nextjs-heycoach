@@ -1,16 +1,24 @@
 export const generatePlay = (gameData) => {
     let playText, player, score;
     if (gameData.gameState){
-        player = selectAttackPlayer(gameData.playerList)
+        player = selectRandomPlayer(gameData.playerList)
         score = shooting(player)
         gameData.teamScore += score ? 2 : 0
         playText = attack(score, player)
+        if(!score){
+            player = selectRandomPlayer(gameData.enemyList)
+            playText += ', ' + rebounding(player) + ','
+        }
     }
     else {
-        player = selectAttackPlayer(gameData.enemyList)
+        player = selectRandomPlayer(gameData.enemyList)
         score = shooting(player)
         gameData.enemyScore += score ? 2 : 0
         playText = attack(score, player)
+        if(!score){
+            player = selectRandomPlayer(gameData.playerList)
+            playText += ', ' + rebounding(player) + ','
+        }
     }
     gameData.playText = playText + ' 时间:' + convertTime(gameData.timer > 0 ? gameData.timer : 0)
     gameData.playText = playText + ' 比分: ' + gameData.teamScore + ':' + gameData.enemyScore
@@ -23,7 +31,7 @@ const convertTime = (timer) => {
     return minutes +':'+ (seconds < 10 == 1 ? '0':'') + Math.floor(timer % 60);
 }
 
-const selectAttackPlayer = (playerList) => {
+const selectRandomPlayer = (playerList) => {
     const playerSelected = Math.floor(Math.random() * playerList.length)
     const player = playerList[playerSelected]
     return player
@@ -41,4 +49,8 @@ const shooting = (player) => {
     if (player.shooting > shootingChance)
         return true;
     return false;
+}
+
+const rebounding = (player) => {
+    return player.name + '抢到篮板'
 }
