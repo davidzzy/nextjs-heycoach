@@ -27,6 +27,12 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
   },
+  ul :{
+    listStyleType: 'none',
+    margin: '10px',
+    padding: 0,
+  },
+  
 }));
 
 
@@ -34,18 +40,20 @@ const useStyles = makeStyles((theme) => ({
 function MatchGround() {
   const [playerList, setPlayerList] = React.useState([]);
   const [enemyList, setEnemyList] = React.useState([]);
+  const [playerStats, setPlayerStats] = React.useState([]);
   const [open, setOpen] = React.useState(false);
   const [enemyOpen, setEnemyOpen] = React.useState(false);
   const [modalStyle] = React.useState();
   const [number, setNumber] = React.useState(0);
   const [enemyNumber, setEnemyNumber] = React.useState(0);
   const [gameText, setGameText] = React.useState([])
+  const [gameData, setGameData] = React.useState({});
   const classes = useStyles();
 
 const SortableItem = sortableElement(({value}) => <li className="SortableItem"> {value}</li>);
 
 const SortableContainer = sortableContainer(({children}) => {
-  return <ul>{children}</ul>;
+  return <ul className={classes.ul}>{children}</ul>;
 });
 
   useEffect(() => {
@@ -54,6 +62,8 @@ const SortableContainer = sortableContainer(({children}) => {
     var enemyList = [], player = '';
     for (var i = 0; i < 5; i++){
       player = createNormalPlayer()
+      player.score = 0
+      selectedList[i].score = 0
       physicalCheck(player)
       techniqueCheck(player)
       enemyList.push(player)
@@ -102,7 +112,7 @@ const SortableContainer = sortableContainer(({children}) => {
     setEnemyOpen(false);
   };
 
-  const startGame = async () => {
+  const startGame = () => {
     console.log('list', playerList)
     let i = 0;
     let gameData = {
@@ -113,16 +123,17 @@ const SortableContainer = sortableContainer(({children}) => {
       playerList,
       enemyList
     }
-    while (gameData.timer > 0) { 
-      gameData = generatePlay(gameData)
-      delayDisplay(i, gameData.playText); 
-      gameData.timer = updateTime(gameData.timer)
-      console.log(gameData.timer, 'time')
-      i++;
-      gameData.gameState = !gameData.gameState 
-    }
-    gameData = generatePlay(gameData)
-    delayDisplay(i, gameData.playText);
+    setGameData(gameData)
+    const interval = setInterval(() => {
+      console.log('This will run every second! ' , gameData.timer);
+      if (gameData.timer < 0) {
+        generateGameData(gameData)
+        return clearInterval(interval)
+      } 
+      generateGameData(gameData)
+      console.log(gameData.timer, 'timer is ')
+      setGameData(gameData)
+    }, 200);// set how fast game runs
   }
 
   const updateTime = (timer) => {
@@ -131,15 +142,22 @@ const SortableContainer = sortableContainer(({children}) => {
 
   
 
-  const delayDisplay = (i, text) => {
-    setTimeout(function() { 
-      setGameText(gameText => [...gameText, text]); 
-    }, 500 * i); 
+  const generateGameData = (gameData) => {
+    gameData = generatePlay(gameData)
+    setPlayerList(gameData.playerList)
+    console.log(playerList)
+    setEnemyList(gameData.enemyList)
+    setGameText(gameText => [...gameText, gameData.playText]);
+    console.log('this timer before', gameData.timer) 
+    gameData.timer = updateTime(gameData.timer)
+    console.log('this timer after', gameData.timer)
+    gameData.gameState = !gameData.gameState 
+    return gameData
   }// TODO: 转换成正常的游戏文字！
 
   const EnemyPositionRender = () => {
     return (
-      <ul> 
+      <ul className={classes.ul}> 
       <li onClick={() => handleEnemyOpen(0)}>中锋</li>
       <li onClick={() => handleEnemyOpen(1)}>大前锋</li>
       <li onClick={() => handleEnemyOpen(2)}>小前锋</li>
@@ -151,7 +169,7 @@ const SortableContainer = sortableContainer(({children}) => {
   
   const PositionRender = () => {
     return (
-      <ul> 
+      <ul className={classes.ul}> 
       <li onClick={() => handleOpen(0)}>中锋</li>
       <li onClick={() => handleOpen(1)}>大前锋</li>
       <li onClick={() => handleOpen(2)}>小前锋</li>
@@ -242,6 +260,14 @@ const SortableContainer = sortableContainer(({children}) => {
         ))}
          
       </SortableContainer>
+      <Typography>我方得分</Typography>
+      <ul className={classes.ul}> 
+      {playerList.length > 0 && playerList.map((player) => (
+          <Typography>{player.score ? player.score : 0}</Typography>
+        ))}
+        </ul>
+        </Grid>
+      <Grid container className={classes.root}>
       <Typography>对方球员</Typography>
       <EnemyPositionRender/>
       <Modal
@@ -257,6 +283,12 @@ const SortableContainer = sortableContainer(({children}) => {
           <SortableItem key={player.name} index={index} value={player.name} />
         ))}
       </SortableContainer>
+      <Typography>对方得分</Typography>
+      <ul className={classes.ul}> 
+      {enemyList.length > 0 && enemyList.map((player) => (
+          <Typography>{player.score ? player.score : 0}</Typography>
+        ))}
+        </ul>
       </Grid>
       <Button variant="contained" color="primary" onClick={() => startGame()}>开始比赛</Button>
       {gameText.length > 0 && gameText.map((text) => (

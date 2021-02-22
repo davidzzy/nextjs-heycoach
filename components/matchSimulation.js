@@ -1,27 +1,34 @@
 export const generatePlay = (gameData) => {
-    let playText, player, score;
+    let playText, player, playerSelected, score;
     if (gameData.gameState){
-        player = selectRandomPlayer(gameData.playerList)
+        playerSelected = selectRandomPlayer(gameData.playerList)
+        player = gameData.playerList[playerSelected]
         score = shooting(player)
         gameData.teamScore += score ? 2 : 0
+        gameData.playerList[playerSelected].score += score ? 2 : 0
         playText = attack(score, player)
         if(!score){
-            player = selectRandomPlayer(gameData.enemyList)
+            playerSelected = selectRandomPlayer(gameData.playerList)
+            player = gameData.enemyList[playerSelected]
             playText += ', ' + rebounding(player) + ','
         }
     }
     else {
-        player = selectRandomPlayer(gameData.enemyList)
+        playerSelected = selectRandomPlayer(gameData.playerList)
+        player = gameData.enemyList[playerSelected]
         score = shooting(player)
         gameData.enemyScore += score ? 2 : 0
+        gameData.enemyList[playerSelected].score += score ? 2 : 0
         playText = attack(score, player)
         if(!score){
-            player = selectRandomPlayer(gameData.playerList)
+            playerSelected = selectRandomPlayer(gameData.playerList)
+            player = gameData.playerList[playerSelected]
             playText += ', ' + rebounding(player) + ','
         }
     }
-    gameData.playText = playText + ' 时间:' + convertTime(gameData.timer > 0 ? gameData.timer : 0)
+    playText = playText + ' 时间:' + convertTime(gameData.timer > 0 ? gameData.timer : 0)
     gameData.playText = playText + ' 比分: ' + gameData.teamScore + ':' + gameData.enemyScore
+    console.log(gameData.playText)
     return gameData;
 }
 
@@ -33,8 +40,7 @@ const convertTime = (timer) => {
 
 const selectRandomPlayer = (playerList) => {
     const playerSelected = Math.floor(Math.random() * playerList.length)
-    const player = playerList[playerSelected]
-    return player
+    return playerSelected
 }
 
 const attack = (score, player) => {
