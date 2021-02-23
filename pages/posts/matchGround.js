@@ -7,9 +7,13 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Modal from '@material-ui/core/Modal';
 import Button from '@material-ui/core/Button';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
 
 import {generatePlay}  from '../../components/matchSimulation.js'
 import {createNormalPlayer, physicalCheck, techniqueCheck}  from '../../components/player.js'
@@ -29,8 +33,16 @@ const useStyles = makeStyles((theme) => ({
   },
   ul :{
     listStyleType: 'none',
-    margin: '10px',
+    marginLeft: '10px',
     padding: 0,
+  },
+  ul :{
+    listStyleType: 'none',
+    marginRight: '10px',
+    padding: 0,
+  },
+  table: {
+    width: 300
   },
   
 }));
@@ -62,8 +74,8 @@ const SortableContainer = sortableContainer(({children}) => {
     var enemyList = [], player = '';
     for (var i = 0; i < 5; i++){
       player = createNormalPlayer()
-      player.score = 0
-      selectedList[i].score = 0
+      player.score = 0; player.reboundCount = 0;
+      selectedList[i].score = 0; selectedList[i].reboundCount = 0;
       physicalCheck(player)
       techniqueCheck(player)
       enemyList.push(player)
@@ -116,7 +128,7 @@ const SortableContainer = sortableContainer(({children}) => {
     console.log('list', playerList)
     let i = 0;
     let gameData = {
-      timer: 120,
+      timer: 240,
       gameState: true,
       teamScore: 0,
       enemyScore: 0,
@@ -133,7 +145,7 @@ const SortableContainer = sortableContainer(({children}) => {
       generateGameData(gameData)
       console.log(gameData.timer, 'timer is ')
       setGameData(gameData)
-    }, 200);// set how fast game runs
+    }, 1000);// set how fast game runs
   }
 
   const updateTime = (timer) => {
@@ -260,12 +272,26 @@ const SortableContainer = sortableContainer(({children}) => {
         ))}
          
       </SortableContainer>
-      <Typography>我方得分</Typography>
-      <ul className={classes.ul}> 
-      {playerList.length > 0 && playerList.map((player) => (
-          <Typography>{player.score ? player.score : 0}</Typography>
-        ))}
-        </ul>
+      <Table style={{ width: 300 }} size="small" aria-label="a dense table">
+        <TableHead>
+          <TableRow>
+            <TableCell>球员数据</TableCell>
+            <TableCell align="right">得分</TableCell>
+            <TableCell align="right">篮板</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {playerList.map((player) => (
+            <TableRow key={player.name}>
+              <TableCell component="th" scope="row">
+                {player.name}
+              </TableCell>
+              <TableCell align="right">{player.score}</TableCell>
+              <TableCell align="right">{player.reboundCount}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
         </Grid>
       <Grid container className={classes.root}>
       <Typography>对方球员</Typography>
@@ -283,12 +309,26 @@ const SortableContainer = sortableContainer(({children}) => {
           <SortableItem key={player.name} index={index} value={player.name} />
         ))}
       </SortableContainer>
-      <Typography>对方得分</Typography>
-      <ul className={classes.ul}> 
-      {enemyList.length > 0 && enemyList.map((player) => (
-          <Typography>{player.score ? player.score : 0}</Typography>
-        ))}
-        </ul>
+      <Table style={{ width: 300 }} size="small" aria-label="a dense table">
+        <TableHead>
+          <TableRow>
+            <TableCell>球员数据</TableCell>
+            <TableCell align="right">得分</TableCell>
+            <TableCell align="right">篮板</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {enemyList.map((player) => (
+            <TableRow key={player.name}>
+              <TableCell component="th" scope="row">
+                {player.name}
+              </TableCell>
+              <TableCell align="right">{player.score}</TableCell>
+              <TableCell align="right">{player.reboundCount}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
       </Grid>
       <Button variant="contained" color="primary" onClick={() => startGame()}>开始比赛</Button>
       {gameText.length > 0 && gameText.map((text) => (

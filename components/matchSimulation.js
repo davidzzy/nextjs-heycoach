@@ -8,8 +8,10 @@ export const generatePlay = (gameData) => {
         gameData.playerList[playerSelected].score += score ? 2 : 0
         playText = attack(score, player)
         if(!score){
-            playerSelected = selectRandomPlayer(gameData.playerList)
+            playerSelected = selectRandomPlayer(gameData.enemyList)
             player = gameData.enemyList[playerSelected]
+            gameData.enemyList[playerSelected].reboundCount++
+            console.log('add rebound', gameData.enemyList[playerSelected].reboundCount)
             playText += ', ' + rebounding(player) + ','
         }
     }
@@ -23,6 +25,7 @@ export const generatePlay = (gameData) => {
         if(!score){
             playerSelected = selectRandomPlayer(gameData.playerList)
             player = gameData.playerList[playerSelected]
+            gameData.playerList[playerSelected].reboundCount ++
             playText += ', ' + rebounding(player) + ','
         }
     }
