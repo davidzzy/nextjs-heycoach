@@ -3,26 +3,25 @@ export const generatePlay = (gameData) => {
     if (gameData.gameState){
         playerSelected = selectRandomPlayer(gameData.playerList)
         player = gameData.playerList[playerSelected]
-        score = shooting(player)
-        gameData.teamScore += score ? 2 : 0
-        gameData.playerList[playerSelected].score += score ? 2 : 0
+        score = shooting(player, playerSelected)
+        gameData.teamScore += score
+        gameData.playerList[playerSelected].score += score
         playText = attack(score, player)
-        if(!score){
+        if(score == 0){
             playerSelected = selectRandomPlayer(gameData.enemyList)
             player = gameData.enemyList[playerSelected]
             gameData.enemyList[playerSelected].reboundCount++
-            console.log('add rebound', gameData.enemyList[playerSelected].reboundCount)
             playText += ', ' + rebounding(player) + ','
         }
     }
     else {
         playerSelected = selectRandomPlayer(gameData.playerList)
         player = gameData.enemyList[playerSelected]
-        score = shooting(player)
-        gameData.enemyScore += score ? 2 : 0
-        gameData.enemyList[playerSelected].score += score ? 2 : 0
+        score = shooting(player, playerSelected)
+        gameData.enemyScore += score
+        gameData.enemyList[playerSelected].score += score
         playText = attack(score, player)
-        if(!score){
+        if(score == 0){
             playerSelected = selectRandomPlayer(gameData.playerList)
             player = gameData.playerList[playerSelected]
             gameData.playerList[playerSelected].reboundCount ++
@@ -47,17 +46,29 @@ const selectRandomPlayer = (playerList) => {
 }
 
 const attack = (score, player) => {
-    const playText = score ? 
-    player.name + '命中' : player.name + '不中'
-    return playText
+    switch (score) {
+        case 0:
+            return player.name + '不中'
+        case 2:
+            return player.name + '命中两分'
+        case 3:
+            return player.name + '命中三分'
+    }
+    return player.name + '不中'
 }
 
-const shooting = (player) => {
+const shooting = (player, playerSelected) => {
+    // SF SG PG has 0.3 chance of making a three
     const shootingChance = Math.floor(Math.random() * 100);
     console.log(player.shooting, shootingChance, '投篮概率') 
-    if (player.shooting > shootingChance)
-        return true;
-    return false;
+    if (player.shooting > shootingChance){
+        const threePointer = Math.floor(Math.random() * 10);
+        console.log('three pointer chance', threePointer, playerSelected)
+        if(playerSelected > 1 && threePointer < 3)
+            return 3;
+        return 2
+    }
+    return 0;
 }
 
 const rebounding = (player) => {
