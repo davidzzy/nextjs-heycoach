@@ -41,6 +41,7 @@ const convertTime = (timer) => {
 }
 
 const selectRandomPlayer = (playerList) => {
+    //TODO: make rebounding / assist / steal / foul more accurate with position instead of random
     const playerSelected = Math.floor(Math.random() * playerList.length)
     return playerSelected
 }
