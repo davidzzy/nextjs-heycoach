@@ -1,12 +1,20 @@
 export const generatePlay = (gameData) => {
-    let playText, player, playerSelected, score;
+    let playText, player, playerSelected, score, assistSelect;
     if (gameData.gameState){
         playerSelected = selectRandomPlayer(gameData.playerList)
         player = gameData.playerList[playerSelected]
         score = shooting(player, playerSelected)
-        gameData.teamScore += score
-        gameData.playerList[playerSelected].score += score
         playText = attack(score, player)
+        if(score > 0){
+            gameData.teamScore += score
+            gameData.playerList[playerSelected].score += score
+            assistSelect = assistCheck(gameData.playerList, playerSelected)
+            if (assistSelect != -1) {
+                player = gameData.playerList[assistSelect]
+                playText += ',' + assisting(player) + ','
+                gameData.playerList[assistSelect].assist++
+            }
+        }
         if(score == 0){
             playerSelected = selectRandomPlayer(gameData.enemyList)
             player = gameData.enemyList[playerSelected]
@@ -15,12 +23,20 @@ export const generatePlay = (gameData) => {
         }
     }
     else {
-        playerSelected = selectRandomPlayer(gameData.playerList)
+        playerSelected = selectRandomPlayer(gameData.enemyList)
         player = gameData.enemyList[playerSelected]
         score = shooting(player, playerSelected)
-        gameData.enemyScore += score
-        gameData.enemyList[playerSelected].score += score
         playText = attack(score, player)
+        if(score > 0){
+            gameData.enemyScore += score
+            gameData.enemyList[playerSelected].score += score
+            assistSelect = assistCheck(gameData.enemyList, playerSelected)
+            if (assistSelect != -1) {
+                player = gameData.enemyList[assistSelect]
+                playText += ',' + assisting(player) + ','
+                gameData.enemyList[assistSelect].assist++
+            }
+        }
         if(score == 0){
             playerSelected = selectRandomPlayer(gameData.playerList)
             player = gameData.playerList[playerSelected]
@@ -58,6 +74,15 @@ const attack = (score, player) => {
     return player.name + '不中'
 }
 
+const assistCheck = (playerList, playerSelected) => {
+    const assistSelect = selectRandomPlayer(playerList)
+    console.log('assist playlist', playerList, assistSelect)
+    if (assistSelect != playerSelected){ // more assist conditions
+        return assistSelect
+    }
+    return -1
+}
+
 const shooting = (player, playerSelected) => {
     // SF SG PG has 0.3 chance of making a three
     const shootingChance = Math.floor(Math.random() * 100);
@@ -74,4 +99,8 @@ const shooting = (player, playerSelected) => {
 
 const rebounding = (player) => {
     return player.name + '抢到篮板'
+}
+
+const assisting = (player) => {
+    return player.name + '送出助攻'
 }

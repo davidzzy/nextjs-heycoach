@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     padding: 0,
   },
   table: {
-    width: 300
+    width: 200
   },
   
 }));
@@ -74,8 +74,8 @@ const SortableContainer = sortableContainer(({children}) => {
     var enemyList = [], player = '';
     for (var i = 0; i < 5; i++){
       player = createNormalPlayer()
-      player.score = 0; player.reboundCount = 0;
-      selectedList[i].score = 0; selectedList[i].reboundCount = 0;
+      player.score = 0; player.reboundCount = 0; player.assist = 0;
+      selectedList[i].score = 0; selectedList[i].reboundCount = 0; selectedList[i].assist = 0;
       physicalCheck(player)
       techniqueCheck(player)
       enemyList.push(player)
@@ -272,12 +272,13 @@ const SortableContainer = sortableContainer(({children}) => {
         ))}
          
       </SortableContainer>
-      <Table style={{ width: 300 }} size="small" aria-label="a dense table">
+      <Table style={{ width: 350 }} size="small" aria-label="a dense table">
         <TableHead>
           <TableRow>
             <TableCell>球员数据</TableCell>
             <TableCell align="right">得分</TableCell>
             <TableCell align="right">篮板</TableCell>
+            <TableCell align="right">助攻</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -288,6 +289,7 @@ const SortableContainer = sortableContainer(({children}) => {
               </TableCell>
               <TableCell align="right">{player.score}</TableCell>
               <TableCell align="right">{player.reboundCount}</TableCell>
+              <TableCell align="right">{player.assist}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -309,12 +311,13 @@ const SortableContainer = sortableContainer(({children}) => {
           <SortableItem key={player.name} index={index} value={player.name} />
         ))}
       </SortableContainer>
-      <Table style={{ width: 300 }} size="small" aria-label="a dense table">
+      <Table style={{ width: 350 }} size="small" aria-label="a dense table">
         <TableHead>
           <TableRow>
             <TableCell>球员数据</TableCell>
             <TableCell align="right">得分</TableCell>
             <TableCell align="right">篮板</TableCell>
+            <TableCell align="right">助攻</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -325,6 +328,7 @@ const SortableContainer = sortableContainer(({children}) => {
               </TableCell>
               <TableCell align="right">{player.score}</TableCell>
               <TableCell align="right">{player.reboundCount}</TableCell>
+              <TableCell align="right">{player.assist}</TableCell>
             </TableRow>
           ))}
         </TableBody>
