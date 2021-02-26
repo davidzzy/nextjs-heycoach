@@ -78,7 +78,10 @@ const assistCheck = (playerList, playerSelected) => {
     const assistSelect = selectRandomPlayer(playerList)
     console.log('assist playlist', playerList, assistSelect)
     if (assistSelect != playerSelected){ // more assist conditions
-        return assistSelect
+        const assistingChance = Math.floor(Math.random() * 100);
+        console.log(playerList[playerSelected].pass, assistingChance, '助攻概率') 
+        if (playerList[playerSelected].pass > assistingChance)
+            return assistSelect
     }
     return -1
 }
@@ -86,7 +89,6 @@ const assistCheck = (playerList, playerSelected) => {
 const shooting = (player, playerSelected) => {
     // SF SG PG has 0.3 chance of making a three
     const shootingChance = Math.floor(Math.random() * 100);
-    console.log(player.shooting, shootingChance, '投篮概率') 
     if (player.shooting > shootingChance){
         const threePointer = Math.floor(Math.random() * 10);
         console.log('three pointer chance', threePointer, playerSelected)
