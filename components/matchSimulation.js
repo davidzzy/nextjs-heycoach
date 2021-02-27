@@ -1,47 +1,72 @@
 export const generatePlay = (gameData) => {
-    let playText, player, playerSelected, score, assistSelect;
+    let playText, player, playerSelected, defensePlayer, defenseSelected, score, defended, assistSelect;
     if (gameData.gameState){
         playerSelected = selectRandomPlayer(gameData.playerList)
-        player = gameData.playerList[playerSelected]
-        score = shooting(player, playerSelected)
-        playText = attack(score, player)
-        if(score > 0){
-            gameData.teamScore += score
-            gameData.playerList[playerSelected].score += score
-            assistSelect = assistCheck(gameData.playerList, playerSelected)
-            if (assistSelect != -1) {
-                player = gameData.playerList[assistSelect]
-                playText += ',' + assisting(player) + ','
-                gameData.playerList[assistSelect].assist++
+        defenseSelected = selectRandomPlayer(gameData.enemyList)
+        player = gameData.playerList[playerSelected] // 选择进攻球员
+        defensePlayer = gameData.enemyList[defenseSelected] //选择防守球员
+        defended = defenseCheck(defensePlayer, player)
+        if(defended == 'false'){
+            score = shooting(player, playerSelected)
+            playText = attack(score, player)
+            if(score > 0){
+                gameData.teamScore += score
+                gameData.playerList[playerSelected].score += score
+                assistSelect = assistCheck(gameData.playerList, playerSelected)
+                if (assistSelect != -1) {
+                    player = gameData.playerList[assistSelect]
+                    playText += ',' + assisting(player) + ','
+                    gameData.playerList[assistSelect].assist++
+                }
+            }
+            if(score == 0){
+                playerSelected = selectRandomPlayer(gameData.enemyList)
+                player = gameData.enemyList[playerSelected]
+                gameData.enemyList[playerSelected].reboundCount++
+                playText += ', ' + rebounding(player) + ','
             }
         }
-        if(score == 0){
-            playerSelected = selectRandomPlayer(gameData.enemyList)
-            player = gameData.enemyList[playerSelected]
-            gameData.enemyList[playerSelected].reboundCount++
-            playText += ', ' + rebounding(player) + ','
+        else {
+            playText = defend(defended, defensePlayer)
+            if (defended == 'block')
+                gameData.enemyList[defenseSelected].block++
+            if (defended == 'steal')
+                gameData.enemyList[defenseSelected].steal++
         }
+        
     }
     else {
         playerSelected = selectRandomPlayer(gameData.enemyList)
+        defenseSelected = selectRandomPlayer(gameData.playerList)
         player = gameData.enemyList[playerSelected]
-        score = shooting(player, playerSelected)
-        playText = attack(score, player)
-        if(score > 0){
-            gameData.enemyScore += score
-            gameData.enemyList[playerSelected].score += score
-            assistSelect = assistCheck(gameData.enemyList, playerSelected)
-            if (assistSelect != -1) {
-                player = gameData.enemyList[assistSelect]
-                playText += ',' + assisting(player) + ','
-                gameData.enemyList[assistSelect].assist++
+        defensePlayer = gameData.playerList[defenseSelected] //选择防守球员
+        defended = defenseCheck(defensePlayer, player)
+        if(defended == 'false'){
+            score = shooting(player, playerSelected)
+            playText = attack(score, player)
+            if(score > 0){
+                gameData.enemyScore += score
+                gameData.enemyList[playerSelected].score += score
+                assistSelect = assistCheck(gameData.enemyList, playerSelected)
+                if (assistSelect != -1) {
+                    player = gameData.enemyList[assistSelect]
+                    playText += ',' + assisting(player) + ','
+                    gameData.enemyList[assistSelect].assist++
+                }
+            }
+            if(score == 0){
+                playerSelected = selectRandomPlayer(gameData.playerList)
+                player = gameData.playerList[playerSelected]
+                gameData.playerList[playerSelected].reboundCount ++
+                playText += ', ' + rebounding(player) + ','
             }
         }
-        if(score == 0){
-            playerSelected = selectRandomPlayer(gameData.playerList)
-            player = gameData.playerList[playerSelected]
-            gameData.playerList[playerSelected].reboundCount ++
-            playText += ', ' + rebounding(player) + ','
+        else {
+            playText = defend(defended, defensePlayer)
+            if (defended == 'block')
+                gameData.playerList[defenseSelected].block++
+            if (defended == 'steal')
+                gameData.playerList[defenseSelected].steal++
         }
     }
     playText = playText + ' 时间:' + convertTime(gameData.timer > 0 ? gameData.timer : 0)
@@ -72,6 +97,29 @@ const attack = (score, player) => {
             return player.name + '命中三分'
     }
     return player.name + '不中'
+}
+
+const defend = (defended, player) => {
+    switch (defended) {
+        case 'block':
+            return player.name + '盖帽'
+        case 'steal':
+            return player.name + '抢断'
+    }
+    return player.name + '不中'
+}
+
+const defenseCheck = (defensePlayer, player) => {
+    const blockChance = Math.floor(Math.random() * 100);
+    const stealChance = Math.floor(Math.random() * 100);
+    const defenseChance = Math.floor(Math.random() * 100); //各种降低防守数据可能性保持真实度
+    if (defensePlayer.defense > blockChance && defensePlayer.defense > stealChance && defensePlayer.defense > defenseChance){
+        if (stealChance > blockChance && stealChance > player.dribble)
+            return 'steal'
+        if (blockChance > stealChance && blockChance > player.jumping)
+            return 'block'
+    }
+    return 'false'
 }
 
 const assistCheck = (playerList, playerSelected) => {
@@ -106,3 +154,4 @@ const rebounding = (player) => {
 const assisting = (player) => {
     return player.name + '送出助攻'
 }
+
