@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { useRouter } from 'next/router'
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
@@ -27,6 +27,7 @@ import {
   physicalCheck, 
   techniqueCheck
   }  from '../../components/player.js'
+import PlayerContext from '../../context/AppContext.js'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -78,6 +79,8 @@ export default function PlayerSelection() {
   const handleChange = (event) => {
     setProvince(event.target.value);
   };  
+  const [context, setContext] = React.useContext(PlayerContext);
+
 
   const selectPlayer = (player) => {
     if ( selectedPlayerList.length >= 5 || selectedPlayerList.some(p => p.name === player.name)){
@@ -197,7 +200,8 @@ export default function PlayerSelection() {
     // TODO: 至少选择五个人进行比赛
 
     const sendPlayer = selectedPlayerList
-    localStorage.setItem('selectedPlayer', JSON.stringify(selectedPlayerList))
+    setContext(selectedPlayerList)
+    console.log('context is', context)
     router.push({
       pathname:'/posts/matchGround'
     })

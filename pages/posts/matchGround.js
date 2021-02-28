@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { withRouter } from 'next/router';
 import Container from '@material-ui/core/Container';
 import {sortableContainer, sortableElement} from 'react-sortable-hoc';
@@ -17,6 +17,7 @@ import Paper from '@material-ui/core/Paper';
 
 import {generatePlay}  from '../../components/matchSimulation.js'
 import {createNormalPlayer, physicalCheck, techniqueCheck}  from '../../components/player.js'
+import PlayerContext from '../../context/AppContext.js'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -61,6 +62,7 @@ function MatchGround() {
   const [gameText, setGameText] = React.useState([])
   const [gameData, setGameData] = React.useState({});
   const classes = useStyles();
+  const [context, setContext] = React.useContext(PlayerContext);
 
 const SortableItem = sortableElement(({value}) => <li className="SortableItem"> {value}</li>);
 
@@ -70,7 +72,7 @@ const SortableContainer = sortableContainer(({children}) => {
 
   useEffect(() => {
     // code to run on component mount
-    var selectedList = JSON.parse(localStorage.getItem('selectedPlayer'))
+    var selectedList = context
     var enemyList = [], player = '';
     for (var i = 0; i < 5; i++){
       player = createNormalPlayer()
@@ -86,6 +88,7 @@ const SortableContainer = sortableContainer(({children}) => {
     setEnemyList(enemyList)
     console.log('list', selectedList)
     console.log('list', enemyList)
+    console.log('context for match is ', context)
   },[])
 
   const onSortEnd = ({oldIndex, newIndex}) => {
