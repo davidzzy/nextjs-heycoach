@@ -70,11 +70,9 @@ export const upgradeElitePlayer = (player) => {
 
 export const upgradeLegendaryPlayer = (player) => {
     if (legendaryList.length > 0) {
-        const randomSelect = Math.floor(legendaryList.length) - 1;
-        console.log('randomSelect', randomSelect, legendaryList[randomSelect])
+        const randomSelect = Math.floor(Math.random() * legendaryList.length);
         const selectedPlayer = legendaryList[randomSelect];
         legendaryList = legendaryList.filter(p => p.name !== selectedPlayer.name);
-        console.log('removed', legendaryList)
         selectedPlayer.rarity = "legendary"
         return selectedPlayer
     }
@@ -110,7 +108,6 @@ const upgradeEliteOutside = (player) => {
 //根据五项身体素质总和来评定球员身体素质
 export const physicalCheck = (player) => {
     const physical = player['speed'] + player['strenth'] + player['jumping'] + player['stamina'] + player['fitness'];
-    console.log('my physical',physical)
     switch(true) {
         case (physical > 400):
             player['physical'] = '超';
@@ -133,7 +130,6 @@ export const physicalCheck = (player) => {
 
 export const techniqueCheck = (player) => {
     const technique = player['rebound'] + player['dribble'] + player['shooting'] + player['pass'] + player['defense'];
-    console.log('my technique',technique)
     switch(true) {
         case (technique > 400):
             player['technique'] = '超';

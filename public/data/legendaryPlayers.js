@@ -78,5 +78,69 @@ export const legendaryPlayers = [
       "speed": 79,
       "stamina": 82,
       "strenth": 70
+    },
+    {
+      "name": "隼粤",
+      "defense": 80,
+      "dribble": 70,
+      "fitness": 81,
+      "height": 188,
+      "jumping": 85,
+      
+      "pass": 70,
+      "position": "外线",
+      "rebound": 65,
+      "shooting": 60,
+      "speed": 78,
+      "stamina": 70,
+      "strenth": 72
+    },
+    {
+      "name": "渡枫",
+      "defense": 60,
+      "dribble": 71,
+      "fitness": 69,
+      "height": 184,
+      "jumping": 65,
+      
+      "pass": 65,
+      "position": "外线",
+      "rebound": 40,
+      "shooting": 79,
+      "speed": 68,
+      "stamina": 65,
+      "strenth": 60
+    },
+    {
+      "name": "狐魏东",
+      "defense": 70,
+      "dribble": 81,
+      "fitness": 89,
+      "height": 185,
+      "jumping": 81,
+      
+      "pass": 70,
+      "position": "外线",
+      "rebound": 60,
+      "shooting": 82,
+      "speed": 80,
+      "stamina": 80,
+      "strenth": 75
+    },
+    {
+      "name": "留玉栋",
+      "defense": 60,
+      "dribble": 79,
+      "fitness": 80,
+      "height": 187,
+      "jumping": 69,
+      
+      "pass": 75,
+      "position": "外线",
+      "rebound": 65,
+      "shooting": 87,
+      "speed": 70,
+      "stamina": 69,
+      "strenth": 79
     }
 ]
