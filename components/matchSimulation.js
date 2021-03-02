@@ -88,12 +88,25 @@ const selectRandomPlayer = (playerList) => {
 }
 
 const attack = (score, player) => {
+    const fancyScore = Math.floor(Math.random() * 100);
     switch (score) {
         case 0:
             return player.name + '不中'
         case 2:
+            if (player.shooting - fancyScore > 70)
+                return player.name + '漂移后仰命中'
+            else if (player.shooting - fancyScore > 60)
+                return player.name + '转身跳投得手'
+            else if (player.shooting - fancyScore > 50)
+                return player.name + '稳稳命中两分'
             return player.name + '命中两分'
         case 3:
+            if (player.shooting - fancyScore > 70)
+                return player.name + '超远程发炮三分，球空心入框'
+            else if (player.shooting - fancyScore > 60)
+                return player.name + '不停球直接三分命中'
+            else if (player.shooting - fancyScore > 50)
+                return player.name + '底角投中三分'
             return player.name + '命中三分'
     }
     return player.name + '不中'

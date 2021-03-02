@@ -91,6 +91,21 @@ const SortableContainer = sortableContainer(({children}) => {
     console.log('context for match is ', context)
   },[])
 
+  const resetGame = () => {
+    for (var i = 0; i < 5; i++){
+      setEnemyList(initiallizePlayers(enemyList, i))
+      setPlayerList(initiallizePlayers(playerList, i))
+    }
+    setGameText([])
+    console.log('reset whole game')
+  }
+
+  const initiallizePlayers = (playerList, i) => {
+    playerList[i].score = 0; playerList[i].reboundCount = 0; playerList[i].assist = 0; 
+    playerList[i].block = 0; playerList[i].steal = 0;
+    return playerList
+  }
+
   const onSortEnd = ({oldIndex, newIndex}) => {
     setPlayerList(arrayMove(playerList, oldIndex, newIndex))
   };
@@ -348,6 +363,7 @@ const SortableContainer = sortableContainer(({children}) => {
       </Table>
       </Grid>
       <Button variant="contained" color="primary" onClick={() => startGame()}>开始比赛</Button>
+      <Button variant="contained" color="primary" onClick={() => resetGame()}>重设</Button>
       {gameText.length > 0 && gameText.map((text) => (
           <Typography>{text}</Typography>
         ))}
