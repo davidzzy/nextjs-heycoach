@@ -1,6 +1,7 @@
 export const generatePlay = (gameData) => {
     let playText, player, playerSelected, defensePlayer, defenseSelected, score, defended, assistSelect;
     if (gameData.gameState){
+        playText = '本队进攻,'
         playerSelected = selectRandomPlayer(gameData.playerList)
         defenseSelected = selectRandomPlayer(gameData.enemyList)
         player = gameData.playerList[playerSelected] // 选择进攻球员
@@ -8,7 +9,7 @@ export const generatePlay = (gameData) => {
         defended = defenseCheck(defensePlayer, player)
         if(defended == 'false'){
             score = shooting(player, playerSelected)
-            playText = attack(score, player)
+            playText += attack(score, player)
             if(score > 0){
                 gameData.teamScore += score
                 gameData.playerList[playerSelected].score += score
@@ -25,6 +26,7 @@ export const generatePlay = (gameData) => {
                 defensePlayer = gameData.enemyList[defenseSelected]
                 player = gameData.playerList[playerSelected]
                 if (reboundCheck(player, defensePlayer)) {
+                    gameData.gameState = !gameData.gameState
                     gameData.playerList[playerSelected].reboundCount ++
                     console.log('进攻板!!!!!')
                     playText += ', ' + offensiveRebounding(player) + ','
@@ -45,6 +47,7 @@ export const generatePlay = (gameData) => {
         
     }
     else {
+        playText = '对方进攻,'
         playerSelected = selectRandomPlayer(gameData.enemyList)
         defenseSelected = selectRandomPlayer(gameData.playerList)
         player = gameData.enemyList[playerSelected]
@@ -52,7 +55,7 @@ export const generatePlay = (gameData) => {
         defended = defenseCheck(defensePlayer, player)
         if(defended == 'false'){
             score = shooting(player, playerSelected)
-            playText = attack(score, player)
+            playText += attack(score, player)
             if(score > 0){
                 gameData.enemyScore += score
                 gameData.enemyList[playerSelected].score += score
@@ -69,6 +72,7 @@ export const generatePlay = (gameData) => {
                 defensePlayer = gameData.playerList[defenseSelected]
                 player = gameData.enemyList[playerSelected]
                 if (reboundCheck(player, defensePlayer)) {
+                    gameData.gameState = !gameData.gameState
                     gameData.enemyList[playerSelected].reboundCount ++
                     playText += ', ' + offensiveRebounding(player) + ','
                 }

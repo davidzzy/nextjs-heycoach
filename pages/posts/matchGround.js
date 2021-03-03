@@ -165,7 +165,7 @@ const SortableContainer = sortableContainer(({children}) => {
       generateGameData(gameData)
       console.log(gameData.timer, 'timer is ')
       setGameData(gameData)
-    }, 1000);// set how fast game runs
+    }, 100);// set how fast game runs
   }
 
   const updateTime = (timer) => {
