@@ -20,10 +20,19 @@ export const generatePlay = (gameData) => {
                 }
             }
             if(score == 0){
-                playerSelected = selectRandomPlayer(gameData.enemyList)
-                player = gameData.enemyList[playerSelected]
-                gameData.enemyList[playerSelected].reboundCount++
-                playText += ', ' + rebounding(player) + ','
+                defenseSelected = selectReboundPlayer(gameData.enemyList)
+                playerSelected = selectReboundPlayer(gameData.playerList)
+                defensePlayer = gameData.enemyList[defenseSelected]
+                player = gameData.playerList[playerSelected]
+                if (reboundCheck(player, defensePlayer)) {
+                    gameData.playerList[playerSelected].reboundCount ++
+                    console.log('进攻板!!!!!')
+                    playText += ', ' + offensiveRebounding(player) + ','
+                }
+                else {
+                    gameData.enemyList[defenseSelected].reboundCount ++
+                    playText += ', ' + rebounding(defensePlayer) + ','
+                }
             }
         }
         else {
@@ -55,10 +64,19 @@ export const generatePlay = (gameData) => {
                 }
             }
             if(score == 0){
-                playerSelected = selectRandomPlayer(gameData.playerList)
-                player = gameData.playerList[playerSelected]
-                gameData.playerList[playerSelected].reboundCount ++
-                playText += ', ' + rebounding(player) + ','
+                defenseSelected = selectReboundPlayer(gameData.playerList)
+                playerSelected = selectReboundPlayer(gameData.enemyList)
+                defensePlayer = gameData.playerList[defenseSelected]
+                player = gameData.enemyList[playerSelected]
+                if (reboundCheck(player, defensePlayer)) {
+                    gameData.enemyList[playerSelected].reboundCount ++
+                    playText += ', ' + offensiveRebounding(player) + ','
+                }
+                else {
+                    gameData.playerList[defenseSelected].reboundCount ++
+                    playText += ', ' + rebounding(defensePlayer) + ','
+                }
+                
             }
         }
         else {
@@ -84,6 +102,13 @@ const convertTime = (timer) => {
 const selectRandomPlayer = (playerList) => {
     //TODO: make rebounding / assist / steal / foul more accurate with position instead of random
     const playerSelected = Math.floor(Math.random() * playerList.length)
+    return playerSelected
+}
+
+const selectReboundPlayer = (playerList) => {
+    //TODO: make rebounding / assist / steal / foul more accurate with position instead of random
+    let playerSelected = Math.floor(Math.random() * playerList.length)
+    if (playerSelected > 1) playerSelected = Math.floor(Math.random() * playerList.length)
     return playerSelected
 }
 
@@ -147,6 +172,12 @@ const assistCheck = (playerList, playerSelected) => {
     return -1
 }
 
+const reboundCheck = (player, defensePlayer) => {
+    const defenseRebound = Math.floor(Math.random() * 50);
+    console.log(player.rebound, '争板概率' , defensePlayer.rebound + defenseRebound)
+    return player.rebound > (defensePlayer.rebound + defenseRebound)
+}
+
 const shooting = (player, playerSelected) => {
     // SF SG PG has 0.3 chance of making a three
     const shootingChance = Math.floor(Math.random() * 100);
@@ -162,6 +193,10 @@ const shooting = (player, playerSelected) => {
 
 const rebounding = (player) => {
     return player.name + '抢到篮板'
+}
+
+const offensiveRebounding = (player) => {
+    return player.name + '抢到进攻篮板'
 }
 
 const assisting = (player) => {
