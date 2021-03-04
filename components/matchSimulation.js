@@ -116,6 +116,13 @@ const selectReboundPlayer = (playerList) => {
     return playerSelected
 }
 
+const selectAssistPlayer = (playerList) => {
+    //TODO: make rebounding / assist / steal / foul more accurate with position instead of random
+    let playerSelected = Math.floor(Math.random() * playerList.length)
+    if (playerSelected < 2) playerSelected = Math.floor(Math.random() * playerList.length)
+    return playerSelected
+}
+
 const attack = (score, player) => {
     const fancyScore = Math.floor(Math.random() * 100);
     switch (score) {
@@ -165,10 +172,11 @@ const defenseCheck = (defensePlayer, player) => {
 }
 
 const assistCheck = (playerList, playerSelected) => {
-    const assistSelect = selectRandomPlayer(playerList)
+    const assistSelect = selectAssistPlayer(playerList);
+    let assistingChance = Math.floor(Math.random() * 100);
     console.log('assist playlist', playerList, assistSelect)
     if (assistSelect != playerSelected){ // more assist conditions
-        const assistingChance = Math.floor(Math.random() * 100);
+        assistingChance = Math.floor(Math.random() * 100);
         console.log(playerList[playerSelected].pass, assistingChance, '助攻概率') 
         if (playerList[playerSelected].pass > assistingChance)
             return assistSelect
