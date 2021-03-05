@@ -1,7 +1,8 @@
 export const legendaryPlayers = [
     {
       "name": "翼建连",
-      "defense": 75,
+      "block": 75,
+      "steal": 40,
       "dribble": 65,
       "fitness": 89,
       "height": 202,
@@ -17,7 +18,8 @@ export const legendaryPlayers = [
     },
     {
       "name": "汪制治",
-      "defense": 65,
+      "block": 65,
+      "steal": 45,
       "dribble": 75,
       "fitness": 80,
       "height": 199,
@@ -33,7 +35,8 @@ export const legendaryPlayers = [
     },
     {
       "name": "尧铭",
-      "defense": 89,
+      "block": 89,
+      "steal": 20,
       "dribble": 60,
       "fitness": 85,
       "height": 210,
@@ -49,7 +52,8 @@ export const legendaryPlayers = [
     },
     {
       "name": "株方羽",
-      "defense": 75,
+      "block": 60,
+      "steal": 60,
       "dribble": 79,
       "fitness": 82,
       "height": 185,
@@ -65,7 +69,8 @@ export const legendaryPlayers = [
     },
     {
       "name": "流威",
-      "defense": 70,
+      "block": 20,
+      "steal": 70,
       "dribble": 85,
       "fitness": 75,
       "height": 181,
@@ -81,7 +86,8 @@ export const legendaryPlayers = [
     },
     {
       "name": "隼粤",
-      "defense": 80,
+      "block": 70,
+      "steal": 70,
       "dribble": 70,
       "fitness": 81,
       "height": 188,
@@ -97,7 +103,8 @@ export const legendaryPlayers = [
     },
     {
       "name": "渡枫",
-      "defense": 60,
+      "block": 55,
+      "steal": 60,
       "dribble": 71,
       "fitness": 69,
       "height": 184,
@@ -113,7 +120,8 @@ export const legendaryPlayers = [
     },
     {
       "name": "狐魏东",
-      "defense": 70,
+      "block": 65,
+      "steal": 70,
       "dribble": 81,
       "fitness": 89,
       "height": 185,
@@ -129,7 +137,8 @@ export const legendaryPlayers = [
     },
     {
       "name": "留玉栋",
-      "defense": 60,
+      "block": 50,
+      "steal": 60,
       "dribble": 79,
       "fitness": 80,
       "height": 187,

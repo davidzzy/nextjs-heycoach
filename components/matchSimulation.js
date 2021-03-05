@@ -162,7 +162,7 @@ const defenseCheck = (defensePlayer, player) => {
     const blockChance = Math.floor(Math.random() * 100);
     const stealChance = Math.floor(Math.random() * 100);
     const defenseChance = Math.floor(Math.random() * 100); //各种降低防守数据可能性保持真实度
-    if (defensePlayer.defense > blockChance && defensePlayer.defense > stealChance && defensePlayer.defense > defenseChance){
+    if (defensePlayer.block > blockChance && defensePlayer.steal > stealChance && (blockChance + stealChance) > defenseChance ){
         if (stealChance > blockChance && stealChance > player.dribble)
             return 'steal'
         if (blockChance > stealChance && blockChance > player.jumping)

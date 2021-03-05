@@ -131,10 +131,11 @@ export default function PlayerSelection() {
   const PlayerStatsComponent = (props) => { 
     const player = props.player
     return <div>
-      <h2 id="simple-modal-title">球员详细数据</h2>
-        <p id="simple-modal-description">姓名 {player.name}</p>
-        <p id="simple-modal-description">省份 {player.province}</p>
+      <p id="simple-modal-description">省份 {player.province}</p>
         <p id="simple-modal-description">身高 {player.height}</p>
+      <h2 id="simple-modal-title">球员详细数据</h2>
+      <Grid container spacing={3}>
+      <Grid item xs={6}>
         <p id="simple-modal-description">位置 {player.position}</p>
         <p id="simple-modal-description">速度 {player.speed}</p>
         <p id="simple-modal-description">力量 {player.strenth}</p>
@@ -142,12 +143,18 @@ export default function PlayerSelection() {
         <p id="simple-modal-description">耐力 {player.stamina}</p>
         <p id="simple-modal-description">体质 {player.fitness}</p>
         <p id="simple-modal-description">综合身体素质 {player.physical}</p>
+        </Grid>
+      <Grid item xs={6}>
         <p id="simple-modal-description">篮板 {player.rebound}</p>
         <p id="simple-modal-description">运球 {player.dribble}</p>
         <p id="simple-modal-description">投篮 {player.shooting}</p>
         <p id="simple-modal-description">传球 {player.pass}</p>
-        <p id="simple-modal-description">防守 {player.defense}</p>
-        <p id="simple-modal-description">综合技术水平 {player.technique}</p></div>
+        <p id="simple-modal-description">盖帽 {player.block}</p>
+        <p id="simple-modal-description">抢断 {player.steal}</p>
+        <p id="simple-modal-description">综合技术水平 {player.technique}</p>
+        </Grid>
+      </Grid>
+    </div>
 }
   //const Wrap = (player) => {(<div>{playerStatsComponent(player)}</div>)};
 

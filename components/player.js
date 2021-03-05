@@ -34,7 +34,8 @@ const createInsidePlayer = () => {
     player['dribble'] = Math.floor(Math.random() * 70); 
     player['shooting'] = Math.floor(Math.random() * 70); 
     player['pass'] = Math.floor(Math.random() * 70); 
-    player['defense'] = Math.floor(Math.random() * 100);
+    player['block'] = Math.floor(Math.random() * 70);
+    player['steal'] = Math.floor(Math.random() * 50);
     player['position'] = '内线';
     player['height'] = Math.floor(Math.random() * 20) + 185;
     player.name = generateName();
@@ -52,7 +53,8 @@ const createOutsidePlayer = () => {
     player['dribble'] = Math.floor(Math.random() * 100); 
     player['shooting'] = Math.floor(Math.random() * 70); 
     player['pass'] = Math.floor(Math.random() * 100); 
-    player['defense'] = Math.floor(Math.random() * 70);
+    player['block'] = Math.floor(Math.random() * 50);
+    player['steal'] = Math.floor(Math.random() * 70);
     player['position'] = '外线';
     player['height'] = Math.floor(Math.random() * 30) + 165;
     player.name = generateName();
@@ -86,7 +88,7 @@ const upgradeEliteInside = (player) => {
     player['fitness'] = Math.floor(Math.random() * 50) + 50;
 
     player['rebound'] = Math.floor(Math.random() * 50) + 50;
-    player['defense'] = Math.floor(Math.random() * 50) + 50;
+    player['block'] = Math.floor(Math.random() * 50) + 50;
     player['shooting'] = Math.floor(Math.random() * 50) + 50;
     player.rarity = "elite";
 }
@@ -98,6 +100,7 @@ const upgradeEliteOutside = (player) => {
     player['fitness'] = Math.floor(Math.random() * 50) + 50;
 
     player['dribble'] = Math.floor(Math.random() * 50) + 50;
+    player['steal'] = Math.floor(Math.random() * 50) + 50;
     player['pass'] = Math.floor(Math.random() * 50) + 50;
     player['shooting'] = Math.floor(Math.random() * 50) + 50;
     player.rarity = "elite";
@@ -129,7 +132,8 @@ export const physicalCheck = (player) => {
 }
 
 export const techniqueCheck = (player) => {
-    const technique = player['rebound'] + player['dribble'] + player['shooting'] + player['pass'] + player['defense'];
+    const technique = player['rebound'] + player['dribble'] + player['shooting'] + player['pass'] + 
+    (player['block'] + player['steal'])/2;
     switch(true) {
         case (technique > 400):
             player['technique'] = '超';

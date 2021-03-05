@@ -233,7 +233,8 @@ const SortableContainer = sortableContainer(({children}) => {
         <p id="simple-modal-description">运球 {player.dribble}</p>
         <p id="simple-modal-description">投篮 {player.shooting}</p>
         <p id="simple-modal-description">传球 {player.pass}</p>
-        <p id="simple-modal-description">防守 {player.defense}</p>
+        <p id="simple-modal-description">盖帽 {player.block}</p>
+        <p id="simple-modal-description">抢断 {player.steal}</p>
         <p id="simple-modal-description">综合技术水平 {player.technique}</p></div>
         </Container>
       )
@@ -263,7 +264,8 @@ const SortableContainer = sortableContainer(({children}) => {
         <p id="simple-modal-description">运球 {player.dribble}</p>
         <p id="simple-modal-description">投篮 {player.shooting}</p>
         <p id="simple-modal-description">传球 {player.pass}</p>
-        <p id="simple-modal-description">防守 {player.defense}</p>
+        <p id="simple-modal-description">盖帽 {player.block}</p>
+        <p id="simple-modal-description">抢断 {player.steal}</p>
         <p id="simple-modal-description">综合技术水平 {player.technique}</p></div>
         </Container>
       )
