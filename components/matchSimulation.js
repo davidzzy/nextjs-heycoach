@@ -1,18 +1,30 @@
 export const generatePlay = (gameData) => {
-    let playText, player, playerSelected, defensePlayer, defenseSelected, score, defended, assistSelect;
+    let playText, player, playerSelected, defensePlayer, defenseSelected, score, defended, assistSelect, shootingType;
     if (gameData.gameState){
         playText = '本队进攻,'
         playerSelected = selectRandomPlayer(gameData.playerList)
         defenseSelected = selectRandomPlayer(gameData.enemyList)
         player = gameData.playerList[playerSelected] // 选择进攻球员
         defensePlayer = gameData.enemyList[defenseSelected] //选择防守球员
+        shootingType = shotSelection(player, playerSelected)
         defended = defenseCheck(defensePlayer, player)
+        if(defended!='steal' && shootingType == '两分') 
+            gameData.playerList[playerSelected].twoPointer.total ++
+        if(defended!='steal' && shootingType == '三分') 
+            gameData.playerList[playerSelected].threePointer.total ++
         if(defended == 'false'){
-            score = shooting(player, playerSelected)
-            playText += attack(score, player)
+            score = shooting(player, shootingType)
+            playText += attack(score, player, shootingType)
+            
             if(score > 0){
                 gameData.teamScore += score
                 gameData.playerList[playerSelected].score += score
+                if(score == 2){
+                    gameData.playerList[playerSelected].twoPointer.hit ++
+                }
+                if(score == 3){
+                    gameData.playerList[playerSelected].threePointer.hit ++
+                }
                 assistSelect = assistCheck(gameData.playerList, playerSelected)
                 if (assistSelect != -1) {
                     player = gameData.playerList[assistSelect]
@@ -38,11 +50,13 @@ export const generatePlay = (gameData) => {
             }
         }
         else {
-            playText = defend(defended, defensePlayer)
-            if (defended == 'block')
-                gameData.enemyList[defenseSelected].block++
-            if (defended == 'steal')
-                gameData.enemyList[defenseSelected].steal++
+            playText = defend(defended, defensePlayer, shootingType)
+            if (defended == 'block'){
+                gameData.enemyList[defenseSelected].blockCount++
+            }
+            if (defended == 'steal'){
+                gameData.enemyList[defenseSelected].stealCount++
+            }
         }
         
     }
@@ -52,13 +66,24 @@ export const generatePlay = (gameData) => {
         defenseSelected = selectRandomPlayer(gameData.playerList)
         player = gameData.enemyList[playerSelected]
         defensePlayer = gameData.playerList[defenseSelected] //选择防守球员
+        shootingType = shotSelection(player, playerSelected)
         defended = defenseCheck(defensePlayer, player)
+        if(defended!='steal' && shootingType == '两分') 
+            gameData.enemyList[playerSelected].twoPointer.total ++
+        if(defended!='steal' && shootingType == '三分') 
+            gameData.enemyList[playerSelected].threePointer.total ++
         if(defended == 'false'){
-            score = shooting(player, playerSelected)
-            playText += attack(score, player)
+            score = shooting(player, shootingType)
+            playText += attack(score, player, shootingType)
             if(score > 0){
                 gameData.enemyScore += score
                 gameData.enemyList[playerSelected].score += score
+                if(score == 2){
+                    gameData.enemyList[playerSelected].twoPointer.hit ++
+                }
+                if(score == 3){
+                    gameData.enemyList[playerSelected].threePointer.hit ++
+                }
                 assistSelect = assistCheck(gameData.enemyList, playerSelected)
                 if (assistSelect != -1) {
                     player = gameData.enemyList[assistSelect]
@@ -84,11 +109,14 @@ export const generatePlay = (gameData) => {
             }
         }
         else {
-            playText = defend(defended, defensePlayer)
-            if (defended == 'block')
-                gameData.playerList[defenseSelected].block++
-            if (defended == 'steal')
-                gameData.playerList[defenseSelected].steal++
+            playText = defend(defended, defensePlayer, shootingType)
+            if (defended == 'block'){
+                gameData.enemyList[playerSelected].twoPointer.total ++
+                gameData.playerList[defenseSelected].blockCount++
+            }
+            if (defended == 'steal'){
+                gameData.playerList[defenseSelected].stealCount++
+            }
         }
     }
     playText = playText + ' 时间:' + convertTime(gameData.timer > 0 ? gameData.timer : 0)
@@ -123,11 +151,11 @@ const selectAssistPlayer = (playerList) => {
     return playerSelected
 }
 
-const attack = (score, player) => {
+const attack = (score, player, shootingType) => {
     const fancyScore = Math.floor(Math.random() * 100);
     switch (score) {
         case 0:
-            return player.name + '不中'
+            return player.name + shootingType + '不中'
         case 2:
             if (player.shooting - fancyScore > 70)
                 return player.name + '漂移后仰命中'
@@ -145,17 +173,18 @@ const attack = (score, player) => {
                 return player.name + '底角投中三分'
             return player.name + '命中三分'
     }
-    return player.name + '不中'
+    return player.name + shootingType + '不中'
 }
 
-const defend = (defended, player) => {
+const defend = (defended, player, shootingType) => {
     switch (defended) {
         case 'block':
             return player.name + '盖帽'
         case 'steal':
             return player.name + '抢断'
     }
-    return player.name + '不中'
+    console.log('wheres shooting type', shootingType)
+    return player.name + shootingType + '不中'
 }
 
 const defenseCheck = (defensePlayer, player) => {
@@ -190,17 +219,26 @@ const reboundCheck = (player, defensePlayer) => {
     return player.rebound > (defensePlayer.rebound + defenseRebound)
 }
 
-const shooting = (player, playerSelected) => {
-    // SF SG PG has 0.3 chance of making a three
+const shooting = (player, shootingType) => {
     const shootingChance = Math.floor(Math.random() * 100);
     if (player.shooting > shootingChance){
-        const threePointer = Math.floor(Math.random() * 10);
-        console.log('three pointer chance', threePointer, playerSelected)
-        if(playerSelected > 1 && threePointer < 3)
-            return 3;
-        return 2
+        if (shootingType == '三分')
+            return 3
+        if (shootingType == '两分')
+            return 2
     }
     return 0;
+}
+
+const shotSelection = (player, playerSelected) => {
+    // C PF has 0.2 chance of shooting three
+    // SF SG PG has 0.4 chance of shooting three
+    // TODO: Better shooter will try more threes
+    const threePointer = Math.floor(Math.random() * 10);
+    if ( (playerSelected < 2 && threePointer < 2) || (playerSelected >= 2 && threePointer < 4)) {
+        return '三分'
+    }
+    return '两分'
 }
 
 const rebounding = (player) => {

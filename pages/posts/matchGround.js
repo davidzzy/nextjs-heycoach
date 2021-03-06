@@ -76,13 +76,11 @@ const SortableContainer = sortableContainer(({children}) => {
     var enemyList = [], player = '';
     for (var i = 0; i < 5; i++){
       player = createNormalPlayer()
-      player.score = 0; player.reboundCount = 0; player.assist = 0; 
-      player.block = 0; player.steal = 0;
-      selectedList[i].score = 0; selectedList[i].reboundCount = 0; selectedList[i].assist = 0; 
-      selectedList[i].block = 0; selectedList[i].steal = 0;
       physicalCheck(player)
       techniqueCheck(player)
       enemyList.push(player)
+      enemyList = initiallizePlayers(enemyList, i)
+      selectedList = initiallizePlayers(selectedList, i)
     }
     setPlayerList(selectedList)
     setEnemyList(enemyList)
@@ -102,7 +100,10 @@ const SortableContainer = sortableContainer(({children}) => {
 
   const initiallizePlayers = (playerList, i) => {
     playerList[i].score = 0; playerList[i].reboundCount = 0; playerList[i].assist = 0; 
-    playerList[i].block = 0; playerList[i].steal = 0;
+    playerList[i].blockCount = 0; playerList[i].stealCount = 0;
+    playerList[i].twoPointer = {hit : 0 , total: 0}
+    playerList[i].threePointer = {hit : 0 , total: 0}
+    console.log(playerList)
     return playerList
   }
 
@@ -294,7 +295,7 @@ const SortableContainer = sortableContainer(({children}) => {
         ))}
          
       </SortableContainer>
-      <Table style={{ width: 500 }} size="small" aria-label="a dense table">
+      <Table style={{ width: 600 }} size="small" aria-label="a dense table">
         <TableHead>
           <TableRow>
             <TableCell>球员数据</TableCell>
@@ -303,6 +304,8 @@ const SortableContainer = sortableContainer(({children}) => {
             <TableCell align="right">助攻</TableCell>
             <TableCell align="right">盖帽</TableCell>
             <TableCell align="right">抢断</TableCell>
+            <TableCell align="right">两分</TableCell>
+            <TableCell align="right">三分</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -314,8 +317,10 @@ const SortableContainer = sortableContainer(({children}) => {
               <TableCell align="right">{player.score}</TableCell>
               <TableCell align="right">{player.reboundCount}</TableCell>
               <TableCell align="right">{player.assist}</TableCell>
-              <TableCell align="right">{player.block}</TableCell>
-              <TableCell align="right">{player.steal}</TableCell>
+              <TableCell align="right">{player.blockCount}</TableCell>
+              <TableCell align="right">{player.stealCount}</TableCell>
+              <TableCell align="right">{player.twoPointer.hit + '/' + player.twoPointer.total}</TableCell>
+              <TableCell align="right">{player.threePointer.hit + '/' + player.threePointer.total}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -337,7 +342,7 @@ const SortableContainer = sortableContainer(({children}) => {
           <SortableItem key={player.name} index={index} value={player.name} />
         ))}
       </SortableContainer>
-      <Table style={{ width: 500 }} size="small" aria-label="a dense table">
+      <Table style={{ width: 600 }} size="small" aria-label="a dense table">
         <TableHead>
           <TableRow>
             <TableCell>球员数据</TableCell>
@@ -346,6 +351,8 @@ const SortableContainer = sortableContainer(({children}) => {
             <TableCell align="right">助攻</TableCell>
             <TableCell align="right">盖帽</TableCell>
             <TableCell align="right">抢断</TableCell>
+            <TableCell align="right">两分</TableCell>
+            <TableCell align="right">三分</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -357,8 +364,10 @@ const SortableContainer = sortableContainer(({children}) => {
               <TableCell align="right">{player.score}</TableCell>
               <TableCell align="right">{player.reboundCount}</TableCell>
               <TableCell align="right">{player.assist}</TableCell>
-              <TableCell align="right">{player.block}</TableCell>
-              <TableCell align="right">{player.steal}</TableCell>
+              <TableCell align="right">{player.blockCount}</TableCell>
+              <TableCell align="right">{player.stealCount}</TableCell>
+              <TableCell align="right">{player.twoPointer.hit + '/' + player.twoPointer.total}</TableCell>
+              <TableCell align="right">{player.threePointer.hit + '/' + player.threePointer.total}</TableCell>
             </TableRow>
           ))}
         </TableBody>
