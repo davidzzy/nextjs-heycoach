@@ -50,7 +50,7 @@ export const generatePlay = (gameData) => {
             }
         }
         else {
-            playText = defend(defended, defensePlayer, shootingType)
+            playText += defend(defended, defensePlayer, player, shootingType)
             if (defended == 'block'){
                 gameData.enemyList[defenseSelected].blockCount++
             }
@@ -109,7 +109,7 @@ export const generatePlay = (gameData) => {
             }
         }
         else {
-            playText = defend(defended, defensePlayer, shootingType)
+            playText += defend(defended, defensePlayer, player, shootingType)
             if (defended == 'block'){
                 gameData.enemyList[playerSelected].twoPointer.total ++
                 gameData.playerList[defenseSelected].blockCount++
@@ -176,12 +176,12 @@ const attack = (score, player, shootingType) => {
     return player.name + shootingType + '不中'
 }
 
-const defend = (defended, player, shootingType) => {
+const defend = (defended, defensePlayer, player, shootingType) => {
     switch (defended) {
         case 'block':
-            return player.name + '盖帽'
+            return player.name + '投篮被' + defensePlayer.name + '盖帽,'
         case 'steal':
-            return player.name + '抢断'
+            return defensePlayer.name + '抢断' + player.name + ','
     }
     console.log('wheres shooting type', shootingType)
     return player.name + shootingType + '不中'
@@ -221,9 +221,15 @@ const reboundCheck = (player, defensePlayer) => {
 
 const shooting = (player, shootingType) => {
     const shootingChance = Math.floor(Math.random() * 100);
-    if (player.shooting > shootingChance){
-        if (shootingType == '三分')
+    const staminaCheck = (player.stamina - (player.twoPointer.total + player.threePointer.total))/100
+    const playerShot = player.shooting * staminaCheck
+    console.log('投篮概率', playerShot,shootingChance, player.name)
+    if ( playerShot > shootingChance ){
+        if (shootingType == '三分'){
+            const threeChance = Math.floor(Math.random() * 100);
+            if(player.shooting > threeChance)
             return 3
+        }
         if (shootingType == '两分')
             return 2
     }

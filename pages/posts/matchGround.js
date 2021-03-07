@@ -10,14 +10,13 @@ import Button from '@material-ui/core/Button';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 
 import {generatePlay}  from '../../components/matchSimulation.js'
 import {createNormalPlayer, physicalCheck, techniqueCheck}  from '../../components/player.js'
 import PlayerContext from '../../context/AppContext.js'
+import { provinceData } from '../../public/data/province.js'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -73,9 +72,12 @@ const SortableContainer = sortableContainer(({children}) => {
   useEffect(() => {
     // code to run on component mount
     var selectedList = context
-    var enemyList = [], player = '';
+    var enemyList = [], player = '', provinceSelect = '';
     for (var i = 0; i < 5; i++){
       player = createNormalPlayer()
+      provinceSelect = Math.floor(Math.random() * 34);
+      console.log(provinceData[provinceSelect].name)
+      player.province = provinceData[provinceSelect].name
       physicalCheck(player)
       techniqueCheck(player)
       enemyList.push(player)
@@ -84,9 +86,6 @@ const SortableContainer = sortableContainer(({children}) => {
     }
     setPlayerList(selectedList)
     setEnemyList(enemyList)
-    console.log('list', selectedList)
-    console.log('list', enemyList)
-    console.log('context for match is ', context)
   },[])
 
   const resetGame = () => {
